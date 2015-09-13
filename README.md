@@ -9,7 +9,8 @@ Conflicts in scene (.unity) files are rediculously hard to resolve, unless you h
 ### TO CLONE:
 
 1. cd to the directory you want the project to be in (mine is D:/projects/\_school/Com S 309/QuarterGame)
-2. git clone https://github.com/Obberton13/ComS-309-Quarter.git
+2. `git clone https://github.com/Obberton13/ComS-309-Quarter.git` OR
+	`git clone git@git.linux.iastate.edu:309F2015/G25_Quarter.git` (if you have your SSH keys set up.)
 	* This will set up the above URL as the 'origin' remote automatically
 3. *In explorer* navigate to QuarterGame/Assets/Scenes
 4. Double-click defaultScene.unity to open Unity and create all other necessary files.
