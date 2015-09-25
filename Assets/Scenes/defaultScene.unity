@@ -357,7 +357,9 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 11400010, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
+    - {fileID: 11400008, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: ce816f2e6abb0504092c23ed9b970dfd, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &1674437457
@@ -462,6 +464,7 @@ MonoBehaviour:
   speed: 6
   jump_force: 8
   gravity: 20
+  rotate_speed: 8
 --- !u!1 &1772423199
 GameObject:
   m_ObjectHideFlags: 0
