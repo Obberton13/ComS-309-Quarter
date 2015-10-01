@@ -11,15 +11,22 @@ public class Chunk : MonoBehaviour {
     private GameObject _block;
 
     private byte[,,] _map = new byte[Constants.chunkWidth, Constants.chunkHeight, Constants.chunkWidth];
+    private MeshCollider collider;
+    private MeshRenderer renderer;
+    private MeshFilter filter;
+
+    void Awake()
+    {
+        collider = GetComponent<MeshCollider>();
+        renderer = GetComponent<MeshRenderer>();
+        filter = GetComponent<MeshFilter>();
+    }
 
     // Use this for initialization
     void Start()
     {
         //System.Threading.Thread thread = new System.Threading.Thread(generateBlocks);
         //thread.Start();
-        MeshCollider collider = GetComponent<MeshCollider>();
-        MeshRenderer renderer = GetComponent<MeshRenderer>();
-        MeshFilter filter = GetComponent<MeshFilter>();
         generateBlocks();
         generateMesh();
     }
@@ -77,12 +84,49 @@ public class Chunk : MonoBehaviour {
         mesh.triangles = tris.ToArray();
         mesh.RecalculateBounds();
         mesh.RecalculateNormals();
+
+        filter.mesh = mesh;
+        collider.sharedMesh = mesh;
     }
 
     private void buildBlock(int x, int y, int z, List<Vector3> verts, List<Vector2> uvs, List<int> tris)
     {
-        Vector3[] corners = { new Vector3(), Vector3.up, Vector3.right, Vector3.up + Vector3.right };
-        buildFace(corners, verts, uvs, tris);
+        //Front face
+        { 
+            Vector3 origin = new Vector3(x, y, z);
+            Vector3[] corners = { origin, origin + Vector3.up, origin + Vector3.right, origin + Vector3.up + Vector3.right };
+            buildFace(corners, verts, uvs, tris);
+        }
+        //back face
+        {
+            Vector3 origin = new Vector3(x + 1, y, z + 1);
+            Vector3[] corners = { origin, origin + Vector3.up, origin - Vector3.right, origin + Vector3.up - Vector3.right };
+            buildFace(corners, verts, uvs, tris);
+        }
+        //right face
+        {
+            Vector3 origin = new Vector3(x + 1, y, z);
+            Vector3[] corners = { origin, origin + Vector3.up, origin + Vector3.forward, origin + Vector3.up + Vector3.forward };
+            buildFace(corners, verts, uvs, tris);
+        }
+        //left face
+        {
+            Vector3 origin = new Vector3(x, y, z);
+            Vector3[] corners = { origin, origin + Vector3.forward, origin + Vector3.up, origin + Vector3.forward + Vector3.up };
+            buildFace(corners, verts, uvs, tris);
+        }
+        //top face
+        {
+            Vector3 origin = new Vector3(x, y + 1, z);
+            Vector3[] corners = { origin, origin + Vector3.forward, origin + Vector3.right, origin + Vector3.forward + Vector3.right };
+            buildFace(corners, verts, uvs, tris);
+        }
+        //bottom face
+        {
+            Vector3 origin = new Vector3(x, y, z);
+            Vector3[] corners = { origin, origin + Vector3.right, origin + Vector3.forward, origin + Vector3.forward + Vector3.right };
+            buildFace(corners, verts, uvs, tris);
+        }
     }
 
     private void buildFace(Vector3[] corners, List<Vector3> verts, List<Vector2> uvs, List<int> tris)

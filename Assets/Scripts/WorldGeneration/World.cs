@@ -28,18 +28,4 @@ public class World : MonoBehaviour {
             }
         }
     }
-
-    void Update()
-    {
-        createChunks();
-    }
-
-    private IEnumerator createChunks()
-    {
-
-        while (true)
-        {
-            yield return 0;
-        }
-    }
 }
