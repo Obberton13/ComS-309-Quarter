@@ -10,8 +10,7 @@ public class World : MonoBehaviour {
         {
             for(int z = -2; z < 3; z++)
             {
-                Chunk chunk = GameObject.Instantiate(prefab).GetComponent<Chunk>();
-                chunk.setChunkPos(x, z);
+                GameObject.Instantiate(prefab, new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), Quaternion.identity);
             }
         }
     }

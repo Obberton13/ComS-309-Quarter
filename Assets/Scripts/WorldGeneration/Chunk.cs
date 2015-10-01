@@ -2,8 +2,7 @@
 using System.Collections;
 
 public class Chunk : MonoBehaviour {
-
-    public const int chunkSize = 20;
+    
     [SerializeField]
     private GameObject _block;
     private int chunkX, chunkZ;
@@ -22,20 +21,17 @@ public class Chunk : MonoBehaviour {
 
     private IEnumerator generateBlocks()
     {
-        for (int x = 0; x < chunkSize; x++)
+        for (int x = 0; x < Constants.chunkWidth; x++)
         {
-            for (int z = 0; z < chunkSize; z++)
+            for (int z = 0; z < Constants.chunkWidth; z++)
             {
-                for (int y = 0; y < chunkSize; y++)
+                for (int y = 0; y < Constants.chunkHeight; y++)
                 {
-                    int newX = x + chunkSize * chunkX;
-                    int newY = y;
-                    int newZ = z + chunkSize * chunkZ;
-                    float noise = Noise.getNoiseValue(newX / 8f, newY / 8f, newZ / 8f);
-                    noise *= ((float)newY) / chunkSize;
-                    if (noise < .05f)
+                    float noise = Noise.getNoiseValue((new Vector3(x, y, z) + transform.position) / 16f);
+                    noise /= (y + 1);
+                    if (noise > .05f)
                     {
-                        GameObject.Instantiate(_block, new Vector3(newX, newY, newZ), Quaternion.identity);
+                        GameObject.Instantiate(_block, new Vector3(x, y, z) + transform.position, Quaternion.identity);
                     }
                 }
                 yield return 0;

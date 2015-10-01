@@ -43,6 +43,11 @@ public class Noise
         }
     }
 
+    public static float getNoiseValue(Vector3 pos)
+    {
+        return getNoiseValue(pos.x, pos.y, pos.z);
+    }
+
     public static float getNoiseValue(float x, float y, float z)
     {
         //wrap the x-value to be between 0 and dimension
@@ -77,6 +82,11 @@ public class Noise
         corner[1, 1, 1] = (float)noiseField[maxX, maxY, maxZ] / (float)maxValue;
 
         return interpolate3d(x, y, z, minX, minX + 1, minY, minY + 1, minZ, minZ + 1, corner);
+    }
+
+    public static float getNoiseValue(Vector2 pos)
+    {
+        return getNoiseValue(pos.x, pos.y);
     }
 
     public static float getNoiseValue(float x, float y)
