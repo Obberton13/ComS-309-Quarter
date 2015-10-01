@@ -15,8 +15,11 @@ public class Chunk : MonoBehaviour {
     private MeshRenderer renderer;
     private MeshFilter filter;
 
+    private World world;
+
     void Awake()
     {
+        world = Camera.main.GetComponent<World>();
         collider = GetComponent<MeshCollider>();
         renderer = GetComponent<MeshRenderer>();
         filter = GetComponent<MeshFilter>();
@@ -39,21 +42,16 @@ public class Chunk : MonoBehaviour {
             {
                 for (int y = 0; y < Constants.chunkHeight; y++)
                 {
-                    _map[x, y, z] = generateBlock(x, y, z);
+                    _map[x, y, z] = getBlock(x, y, z);
                 }
             }
         }
     }
 
-    private byte generateBlock(int x, int y, int z)
+    private byte getBlock(int x, int y, int z)
     {
-        float noise = Noise.getNoiseValue((new Vector3(x, y, z) + transform.position) / 16f);
-        noise /= (y + 1);
-        if (noise > .04f)
-        {
-            return 1;
-        }
-        return 0;
+        Vector3 pos = new Vector3(x, y, z) + transform.position;
+        return world.getPotentialBlock(pos);
     }
 
     private void generateMesh()
@@ -92,17 +90,20 @@ public class Chunk : MonoBehaviour {
     private void buildBlock(int x, int y, int z, List<Vector3> verts, List<Vector2> uvs, List<int> tris)
     {
         //Front face
-        { 
+        if(isTransparent(x, y, z - 1))
+        {
             Vector3 origin = new Vector3(x, y, z);
             Vector3[] corners = { origin, origin + Vector3.up, origin + Vector3.right, origin + Vector3.up + Vector3.right };
             buildFace(corners, verts, uvs, tris);
         }
         //back face
+        if(isTransparent(x, y, z + 1))
         {
             Vector3 origin = new Vector3(x + 1, y, z + 1);
             Vector3[] corners = { origin, origin + Vector3.up, origin - Vector3.right, origin + Vector3.up - Vector3.right };
             buildFace(corners, verts, uvs, tris);
         }
+        if(isTransparent(x + 1, y, z))
         //right face
         {
             Vector3 origin = new Vector3(x + 1, y, z);
@@ -110,18 +111,21 @@ public class Chunk : MonoBehaviour {
             buildFace(corners, verts, uvs, tris);
         }
         //left face
+        if(isTransparent(x - 1, y, z))
         {
             Vector3 origin = new Vector3(x, y, z);
             Vector3[] corners = { origin, origin + Vector3.forward, origin + Vector3.up, origin + Vector3.forward + Vector3.up };
             buildFace(corners, verts, uvs, tris);
         }
         //top face
+        if(isTransparent(x, y + 1, z))
         {
             Vector3 origin = new Vector3(x, y + 1, z);
             Vector3[] corners = { origin, origin + Vector3.forward, origin + Vector3.right, origin + Vector3.forward + Vector3.right };
             buildFace(corners, verts, uvs, tris);
         }
         //bottom face
+        if(isTransparent(x, y - 1, z))
         {
             Vector3 origin = new Vector3(x, y, z);
             Vector3[] corners = { origin, origin + Vector3.right, origin + Vector3.forward, origin + Vector3.forward + Vector3.right };
@@ -149,5 +153,16 @@ public class Chunk : MonoBehaviour {
         tris.Add(index);
         tris.Add(index+2);
         tris.Add(index+3);
+    }
+
+    private bool isTransparent(Vector3 pos)
+    {
+        return isTransparent(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
+    }
+
+    private bool isTransparent(int x, int y, int z)
+    {
+        if (y < 0) return true;
+        return getBlock(x, y, z) == 0;
     }
 }

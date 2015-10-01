@@ -23,9 +23,23 @@ public class World : MonoBehaviour {
             for (int z = -2; z < 3; z++)
             {
                 GameObject.Instantiate(_prefab, new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), Quaternion.identity);
-                //TODO instead of instantiate, generate all the vertices and tris.
-                //yield return 0;
             }
         }
+    }
+
+    public byte getPotentialBlock(Vector3 pos)
+    {
+        return getPotentialBlock(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
+    }
+
+    public byte getPotentialBlock(int x, int y, int z)
+    {
+        float noise = Noise.getNoiseValue(new Vector3(x, y, z) / 16f);
+        noise /= (y + 1);
+        if (noise > .04f)
+        {
+            return 1;
+        }
+        return 0;
     }
 }
