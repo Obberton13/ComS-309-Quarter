@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerMovementScript : MonoBehaviour {
+public class PlayerControlScript : MonoBehaviour {
 
 	[SerializeField]
 	private float speed = 6.0F;
@@ -17,10 +17,12 @@ public class PlayerMovementScript : MonoBehaviour {
 
 	private CharacterController CharControl;
 	private Vector3 moveDir;
+	private PlayerInventoryScript inventory;
 
 	// Use this for initialization
 	void Start () {
 		CharControl = GetComponent<CharacterController>();
+		inventory = GetComponent<PlayerInventoryScript>();
 		moveDir = Vector3.zero;
 	}
 	
@@ -46,6 +48,20 @@ public class PlayerMovementScript : MonoBehaviour {
 		//Rotate the player
 		transform.Rotate(Vector3.up * Time.deltaTime * Input.GetAxis("HorizontalJoy2") * rotate_speed);
 
+
+
+		//Attempt to grab an item
+		if (Input.GetButton("4")) { //TODO change to right trigger/bumper
+			if (true) {
+
+				//get info about what block was hit, should have an int saved to it.
+				inventory.addItem(1); //TODO change to the right number of that block.
+
+
+
+			}
+
+		}
 
 		
 	}

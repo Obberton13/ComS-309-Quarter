@@ -464,7 +464,7 @@ MonoBehaviour:
   speed: 6
   jump_force: 8
   gravity: 20
-  rotate_speed: 8
+  rotate_speed: 90
 --- !u!1 &1772423199
 GameObject:
   m_ObjectHideFlags: 0
