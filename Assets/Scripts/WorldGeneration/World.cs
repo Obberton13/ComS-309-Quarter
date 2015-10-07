@@ -5,10 +5,6 @@ public class World : MonoBehaviour {
 
     [SerializeField]
     private GameObject _prefab;
-
-    private Queue _needsGenerated = new Queue();
-    private Queue _doneGenerating = new Queue();
-
     
     void Awake()
     {
@@ -34,9 +30,14 @@ public class World : MonoBehaviour {
 
     public byte getPotentialBlock(int x, int y, int z)
     {
-        float noise = Noise.getNoiseValue(new Vector3(x, y, z) / 16f);
-        noise /= (y + 1);
-        if (noise > .04f)
+        if (y == 0) return 1;
+        float noise1 = Noise.getNoiseValue(new Vector3(x, y, z) / 16f);
+        float noise2 = Noise.getNoiseValue(new Vector3(x, y, z) / 37f);
+        float noise4 = Noise.getNoiseValue(new Vector3(x, y, z) / 4f);
+        noise1 += noise2*25 + noise4;
+        noise1 /= 27;
+        noise1 /= (y + 1);
+        if (noise1 > .04f && noise2 < .7)
         {
             return 1;
         }

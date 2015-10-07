@@ -10,6 +10,10 @@ public class Chunk : MonoBehaviour {
     [SerializeField]
     private GameObject _block;
 
+    /// <summary>
+    ///     Keeps track of which blocks are where in this particular chunk.
+    ///     This DOES need to be serialized.
+    /// </summary>
     private byte[,,] _map = new byte[Constants.chunkWidth, Constants.chunkHeight, Constants.chunkWidth];
     private MeshCollider collider;
     private MeshRenderer renderer;
@@ -28,8 +32,6 @@ public class Chunk : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        //System.Threading.Thread thread = new System.Threading.Thread(generateBlocks);
-        //thread.Start();
         generateBlocks();
         generateMesh();
     }
@@ -148,21 +150,17 @@ public class Chunk : MonoBehaviour {
         uvs.Add(Vector2.right);
 
         tris.Add(index);
-        tris.Add(index+1);
-        tris.Add(index+2);
+        tris.Add(index + 1);
+        tris.Add(index + 2);
         tris.Add(index);
-        tris.Add(index+2);
-        tris.Add(index+3);
-    }
-
-    private bool isTransparent(Vector3 pos)
-    {
-        return isTransparent(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
+        tris.Add(index + 2);
+        tris.Add(index + 3);
     }
 
     private bool isTransparent(int x, int y, int z)
     {
         if (y < 0) return true;
+        if (y >= Constants.chunkHeight) return true;
         return getBlock(x, y, z) == 0;
     }
 }
