@@ -18,7 +18,11 @@ public class World : MonoBehaviour {
         {
             for (int z = -2; z < 3; z++)
             {
-                GameObject.Instantiate(_prefab, new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), Quaternion.identity);
+                ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
+                info.generate();
+                info.generateMesh();
+                GameObject obj = (GameObject)GameObject.Instantiate(_prefab, new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), Quaternion.identity);
+                ((Chunk)obj.GetComponent<Chunk>()).setInfo(info);
             }
         }
     }
