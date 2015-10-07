@@ -7,12 +7,11 @@ public class PlayerInventoryScript {
 	private const int Empty = 0;
 	private const int GrassBlock = 1;
 	private const int WaterBlock = 2;
-	//private const int AirBlock = 3; //TBA
 
 
 
-	//TODO Make this not an int. Cause you know. You can't save to and int. 
-	//Well you could.... but that would be incredibly stupid. 
+
+	//TODO don't use arrays. 
 	private int[] inventory;
 	private int itemsHolding;
 	private int itemsMax;
@@ -29,7 +28,7 @@ public class PlayerInventoryScript {
 
 	}
 
-
+	//Loops through the inventory and finds the first open spot.
 	public void addItem(int item) {
 
 		if (itemsHolding < itemsMax) {
@@ -39,6 +38,7 @@ public class PlayerInventoryScript {
 				if (inventory[i] == 0) {
 					inventory[i] = item;
 					itemsHolding++;
+					break;
 				}
 			}
 		}
