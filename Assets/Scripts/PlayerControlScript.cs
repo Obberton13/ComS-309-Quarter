@@ -51,9 +51,9 @@ public class PlayerControlScript : MonoBehaviour {
 		CharControl.Move(moveDir * Time.deltaTime);
 
 		//Rotate the player
-		transform.Rotate(Vector3.up * Time.deltaTime * Input.GetAxis("HorizontalJoy2") * rotateSpeed);
+		transform.Rotate(Vector3.up * Time.deltaTime * Input.GetAxis("XboxRJoyHoriz") * rotateSpeed);
 
-
+		//print(Input.GetAxis("XboxDpadHoriz") + ", " + Input.GetAxis("XboxDpadVert"));
 
 		//Attempt to place an item
 		if (Input.GetButtonDown("XboxRBumper")) {
