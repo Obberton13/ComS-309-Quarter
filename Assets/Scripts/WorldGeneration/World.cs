@@ -5,7 +5,9 @@ public class World : MonoBehaviour {
 
     [SerializeField]
     private GameObject _prefab;
-    
+
+	public ChunkInfo info;
+
     void Awake()
     {
         Random.seed = 1;
@@ -18,7 +20,7 @@ public class World : MonoBehaviour {
         {
             for (int z = -2; z < 3; z++)
             {
-                ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
+                info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
                 info.generate();
                 info.generateMesh();
                 GameObject obj = (GameObject)GameObject.Instantiate(_prefab, new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), Quaternion.identity);

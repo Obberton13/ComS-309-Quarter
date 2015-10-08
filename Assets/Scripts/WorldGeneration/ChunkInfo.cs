@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
+[Serializable]
 public class ChunkInfo {
     public Mesh mesh { get; private set; }
 
