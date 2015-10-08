@@ -97,7 +97,6 @@ GameObject:
   - 114: {fileID: 62489722}
   - 114: {fileID: 62489721}
   - 225: {fileID: 62489725}
-  - 114: {fileID: 62489726}
   m_Layer: 5
   m_Name: HUDCanvas
   m_TagString: Untagged
@@ -195,23 +194,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &62489726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 62489720}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ead6994e4a4f6d4aba26d062fb55b57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttons:
-  - {fileID: 1326618423}
-  - {fileID: 1505000635}
-  - {fileID: 2083777120}
-  - {fileID: 864311402}
-  - {fileID: 1219098257}
 --- !u!1 &158267915
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,7 +714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aba86153c3322b0449d2fd5a9c8118e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlighted: 0
+  selected: 0
 --- !u!1 &1219098255
 GameObject:
   m_ObjectHideFlags: 0
