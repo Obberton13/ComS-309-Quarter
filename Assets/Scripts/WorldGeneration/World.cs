@@ -9,6 +9,7 @@ public class World : MonoBehaviour {
     private Dictionary<int, Dictionary<int, Chunk>> _chunks = new Dictionary<int, Dictionary<int, Chunk>>();
     private Queue<ChunkInfo> _needsGenerated;
     private Queue<ChunkInfo> _needsMesh;
+    private Queue<ChunkInfo> _fullyGenerated;
     private volatile bool _running;
     private System.Threading.Thread generationThread1;
     
@@ -25,9 +26,9 @@ public class World : MonoBehaviour {
 
     void Start()
     {
-        for (int x = -8; x < 9; x++)
+        for (int x = -2; x < 3; x++)
         {
-            for (int z = -8; z < 9; z++)
+            for (int z = -2; z < 3; z++)
             {
                 ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
                 lock(_needsGenerated)
@@ -71,10 +72,21 @@ public class World : MonoBehaviour {
         noise1 += noise2*25 + noise4;
         noise1 /= 27;
         noise1 /= (y + 1);
-        if (noise1 > .04f && noise2 < .7)
+        if (noise1 > .04f)
         {
             return 1;
         }
+        if (noise2 < .2) return 2;
+        return 0;
+    }
+
+    public byte getActualBlock(Vector3 pos)
+    {
+        return getActualBlock(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
+    }
+
+    public byte getActualBlock(int x, int y, int z)
+    {
         return 0;
     }
 

@@ -29,6 +29,11 @@ public class Chunk : MonoBehaviour {
         _info = info;
     }
 
+    public byte getBlockAt(int x, int y, int z)
+    {
+        return _info.map[x, y, z];
+    }
+
     public void generateMesh()
     {
         Mesh mesh = new Mesh();
@@ -64,63 +69,71 @@ public class Chunk : MonoBehaviour {
 
     private void buildBlock(int x, int y, int z, List<Vector3> verts, List<Vector2> uvs, List<int> tris)
     {
+        byte block = _info.map[x, y, z];
         //Front face
         if (isTransparent(x, y, z - 1))
         {
             Vector3 origin = new Vector3(x, y, z);
             Vector3[] corners = { origin, origin + Vector3.up, origin + Vector3.right, origin + Vector3.up + Vector3.right };
-            buildFace(corners, verts, uvs, tris);
+            buildFace(block, corners, verts, uvs, tris);
         }
         //back face
         if (isTransparent(x, y, z + 1))
         {
             Vector3 origin = new Vector3(x + 1, y, z + 1);
             Vector3[] corners = { origin, origin + Vector3.up, origin - Vector3.right, origin + Vector3.up - Vector3.right };
-            buildFace(corners, verts, uvs, tris);
+            buildFace(block, corners, verts, uvs, tris);
         }
         if (isTransparent(x + 1, y, z))
         //right face
         {
             Vector3 origin = new Vector3(x + 1, y, z);
             Vector3[] corners = { origin, origin + Vector3.up, origin + Vector3.forward, origin + Vector3.up + Vector3.forward };
-            buildFace(corners, verts, uvs, tris);
+            buildFace(block, corners, verts, uvs, tris);
         }
         //left face
         if (isTransparent(x - 1, y, z))
         {
             Vector3 origin = new Vector3(x, y, z);
             Vector3[] corners = { origin, origin + Vector3.forward, origin + Vector3.up, origin + Vector3.forward + Vector3.up };
-            buildFace(corners, verts, uvs, tris);
+            buildFace(block, corners, verts, uvs, tris);
         }
         //top face
         if (isTransparent(x, y + 1, z))
         {
             Vector3 origin = new Vector3(x, y + 1, z);
             Vector3[] corners = { origin, origin + Vector3.forward, origin + Vector3.right, origin + Vector3.forward + Vector3.right };
-            buildFace(corners, verts, uvs, tris);
+            buildFace(block, corners, verts, uvs, tris);
         }
         //bottom face
         if (isTransparent(x, y - 1, z))
         {
             Vector3 origin = new Vector3(x, y, z);
             Vector3[] corners = { origin, origin + Vector3.right, origin + Vector3.forward, origin + Vector3.forward + Vector3.right };
-            buildFace(corners, verts, uvs, tris);
+            buildFace(block, corners, verts, uvs, tris);
         }
     }
 
-    private void buildFace(Vector3[] corners, List<Vector3> verts, List<Vector2> uvs, List<int> tris)
+    private void buildFace(byte block, Vector3[] corners, List<Vector3> verts, List<Vector2> uvs, List<int> tris)
     {
         int index = verts.Count;
+
+        block -= 1;
+
+        Vector2 uvLL = new Vector2(block % 8, 7f - Mathf.Floor(block / 8)) * .125f;
+        Vector2 uvUL = new Vector2(0, .125f) + uvLL;
+        Vector2 uvUR = new Vector2(.125f, .125f) + uvLL;
+        Vector2 uvLR = new Vector2(.125f, 0)+uvLL;
 
         verts.Add(corners[0]);
         verts.Add(corners[1]);
         verts.Add(corners[3]);
         verts.Add(corners[2]);
 
-        uvs.Add(new Vector2());
-        uvs.Add(Vector2.up);
-        uvs.Add(Vector2.up + Vector2.right);
-        uvs.Add(Vector2.right);
+        uvs.Add(uvUL);
+        uvs.Add(uvUR);
+        uvs.Add(uvLR);
+        uvs.Add(uvLL);
 
         tris.Add(index);
         tris.Add(index + 1);
@@ -139,6 +152,7 @@ public class Chunk : MonoBehaviour {
 
     private byte getBlock(int x, int y, int z)
     {
-        return _info.world.getPotentialBlock(new Vector3(x, y, z) + transform.position);
+        if (x < Constants.chunkWidth && x >= 0 && z < Constants.chunkWidth && z >= 0 && y < Constants.chunkHeight && y >= 0) return _info.map[x, y, z];
+        return 0;
     }
 }

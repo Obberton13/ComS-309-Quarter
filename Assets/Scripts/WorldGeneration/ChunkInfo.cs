@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 
 public class ChunkInfo {
-    public Mesh mesh { get; private set; }
-
-    public byte[,,] map { get; private set; }
+    public byte[,,] map { get; set; }
     public Vector3 position { get; private set; }
     public World world { get; private set; }
 
     public ChunkInfo(Vector3 position, World world)
     {
         map = new byte[Constants.chunkWidth, Constants.chunkHeight, Constants.chunkWidth];
-        mesh = new Mesh();
         this.world = world;
         this.position = position;
     }
