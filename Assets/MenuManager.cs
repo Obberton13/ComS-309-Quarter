@@ -13,12 +13,15 @@ public class MenuManager : MonoBehaviour {
 		_END
 	};
 
+    public bool mousedOver;
+
 	public Buttons selected;
 
 	// Use this for initialization
 	void Start () {
 		selected = Buttons.newGame;
 		highlightSelected (selected);
+        mousedOver = false;
 	}
 	
 	// Update is called once per frame
@@ -35,8 +38,14 @@ public class MenuManager : MonoBehaviour {
 			checkSelection();
 			highlightSelected (selected);
 		}
+        if (mousedOver)
+        {
+            unhighlightSelected(selected);
+            highlightSelected(selected);
+            mousedOver = false;
+        }
 	}
-	
+
 	public void highlightSelected (Buttons selected) {
 		//Debug.Log("Highlighting: btn_" + selected);
 		GameObject button = GameObject.Find ("btn_" + selected);
@@ -51,6 +60,7 @@ public class MenuManager : MonoBehaviour {
 	
 	public void makeMenuSelection(int selection){
 		Debug.Log("FROM: makeMenuSelection " + selection);
+        Debug.Log("Time: " + System.DateTime.Now);
 	}
 
 	public void checkSelection(){
