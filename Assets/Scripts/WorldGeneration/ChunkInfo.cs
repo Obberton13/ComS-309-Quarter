@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
+[Serializable]
 public class ChunkInfo {
     public byte[,,] map { get; set; }
     public Vector3 position { get; private set; }

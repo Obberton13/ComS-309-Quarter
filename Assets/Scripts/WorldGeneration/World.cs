@@ -12,7 +12,7 @@ public class World : MonoBehaviour {
     private Queue<ChunkInfo> _fullyGenerated;
     private volatile bool _running;
     private System.Threading.Thread generationThread1;
-    
+
     void Awake()
     {
         Random.seed = 1;
@@ -30,11 +30,19 @@ public class World : MonoBehaviour {
         {
             for (int z = -2; z < 3; z++)
             {
+<<<<<<< HEAD
                 ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
                 lock(_needsGenerated)
                 {
                     _needsGenerated.Enqueue(info);
                 }
+=======
+                info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
+                info.generate();
+                info.generateMesh();
+                GameObject obj = (GameObject)GameObject.Instantiate(_prefab, new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), Quaternion.identity);
+                ((Chunk)obj.GetComponent<Chunk>()).setInfo(info);
+>>>>>>> ed7548cece62af7a802571a603e951ceff310d2b
             }
         }
     }
