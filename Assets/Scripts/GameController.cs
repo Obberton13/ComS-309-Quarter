@@ -6,7 +6,7 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		Application.targetFrameRate = 60;
+		Application.targetFrameRate = 75;
 	}
 	
 	// Update is called once per frame
