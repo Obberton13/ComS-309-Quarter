@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using System;
 
-[Serializable]
+[System.Serializable]
 public class ChunkInfo {
     public byte[,,] map { get; set; }
-    public Vector3 position { get; private set; }
-    public World world { get; private set; }
+	public float x;
+	public float y;
+	public float z;
+	//private World world;
 
     public ChunkInfo(Vector3 position, World world)
     {
         map = new byte[Constants.chunkWidth, Constants.chunkHeight, Constants.chunkWidth];
-        this.world = world;
-        this.position = position;
+        //this.world = world;
+		x = position.x;
+		y = position.y;
+		z = position.z;
     }
 
     public void generate()
@@ -31,7 +35,11 @@ public class ChunkInfo {
 
     private byte getBlock(int x, int y, int z)
     {
-        Vector3 pos = new Vector3(x, y, z) + position;
-        return world.getPotentialBlock(pos);
+        Vector3 pos = new Vector3(x, y, z) + new Vector3(this.x, this.y, this.z);
+        return World.getPotentialBlock(pos);
     }
+	public Vector3 getPos()
+	{
+		return new Vector3(this.x, this.y, this.z);
+	}
 }

@@ -85,8 +85,6 @@ NavMeshSettings:
     cellSize: .166666672
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
-<<<<<<< HEAD
-=======
 --- !u!1 &244834999
 GameObject:
   m_ObjectHideFlags: 0
@@ -96,6 +94,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 244835001}
   - 114: {fileID: 244835000}
+  - 114: {fileID: 244835002}
   m_Layer: 0
   m_Name: SaveObject
   m_TagString: Untagged
@@ -126,6 +125,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
+--- !u!114 &244835002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 244834999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c0b7ec60fe5041b1b2fa301525c9373, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1615269047
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,4 +295,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
->>>>>>> 617f4c2f621ba284b4088c46d837aacec58e1011
