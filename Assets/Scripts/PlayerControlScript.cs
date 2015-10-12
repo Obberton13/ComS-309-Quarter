@@ -22,6 +22,8 @@ public class PlayerControlScript : MonoBehaviour {
 	private Vector3 moveDir;
 	private PlayerInventoryScript inventory;
 
+	private GameObject PlayerCamera;
+
 	//Crosshair varaibles;
 	[SerializeField]
 	private Texture2D crosshairTexture;
@@ -35,6 +37,7 @@ public class PlayerControlScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		CharControl = GetComponent<CharacterController>();
+		PlayerCamera = transform.Find("OVRCameraRig").gameObject;
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
 	}
@@ -61,45 +64,28 @@ public class PlayerControlScript : MonoBehaviour {
 		//Rotate the player
 		transform.Rotate(Vector3.up * Time.deltaTime * Input.GetAxis("XboxRJoyHoriz") * rotateSpeed);
 
-		//TODO use this if you don't have an oculus. 
-		transform.Rotate(Vector3.right * Time.deltaTime * Input.GetAxis("XboxRJoyVert") * rotateSpeed);
-
 		//Attempt to place an item
 		if (Input.GetButtonDown("XboxRBumper")) {
 		
-			if (Physics.Raycast(transform.position, transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
 				Vector3 newLocation = crosshairHit.transform.position + crosshairHit.normal;
 
 				//checks if the space is open to place a block. 
 				if (!Physics.CheckSphere(newLocation, CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
+					//TODO remove from inventory! 
 					Instantiate(basicBlock, newLocation, Quaternion.identity);
 				}
 			}
-			//Legacy Code. ;) 
-			/*
-			//get the exact new location for the block to be placed
-			//TODO this doesn't take into account the rotation of the players head? 
-			float tempX = transform.position.x + transform.forward.x;
-			float tempY = transform.position.y + transform.forward.y;
-			float tempZ = transform.position.z + transform.forward.z;
-		
-			//normalize to a grid size.
-			tempX = (int) (Mathf.Round(tempX / CUBE_WIDTH) * CUBE_WIDTH);
-			tempY = (int) (Mathf.Round(tempY / CUBE_WIDTH) * CUBE_WIDTH);
-			tempZ = (int) (Mathf.Round(tempZ / CUBE_WIDTH) * CUBE_WIDTH);
 
-			//Or else the block is half in the ground
-			tempY -= 0.5F; //this weird by the way. 
-
-			//save it all to a vector3location
-			Vector3 blockLocation = new Vector3(tempX, tempY, tempZ);
-
-			//TODO check if there is already something there
-			//TODO add it to the game memory somehow
-			Instantiate(basicBlock, blockLocation, Quaternion.identity);
-			*/
 		}
 
+		if (Input.GetButtonDown("XboxLBumper")) {
+			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+
+				//TODO add to inventory!
+				Destroy(crosshairHit.transform.gameObject);
+			}
+		}
 		
 	}
 
