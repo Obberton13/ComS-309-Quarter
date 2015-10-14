@@ -7,12 +7,13 @@ public class World : MonoBehaviour {
     [SerializeField]
     private GameObject _prefab;
     private Dictionary<int, Dictionary<int, Chunk>> _chunks = new Dictionary<int, Dictionary<int, Chunk>>();
-    private Queue<ChunkInfo> _needsGenerated;
+	private List<ChunkInfo> _infos = new List<ChunkInfo> ();
+	private Queue<ChunkInfo> _needsGenerated;
     private Queue<ChunkInfo> _needsMesh;
     private Queue<ChunkInfo> _fullyGenerated;
     private volatile bool _running;
     private System.Threading.Thread generationThread1;
-    
+
     void Awake()
     {
         Random.seed = 1;
@@ -21,21 +22,22 @@ public class World : MonoBehaviour {
         _needsMesh = new Queue<ChunkInfo>();
         _running = true;
         generationThread1 = new System.Threading.Thread(generateChunks);
-        generationThread1.Start();
+        //generationThread1.Start();
     }
 
     void Start()
     {
-        for (int x = -2; x < 3; x++)
+        for (int x = -10; x < 10; x++)
         {
-            for (int z = -2; z < 3; z++)
+            for (int z = -10; z < 10; z++)
             {
                 ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
                 lock(_needsGenerated)
                 {
                     _needsGenerated.Enqueue(info);
+					_infos.Add(info);
                 }
-            }
+			}
         }
     }
 
@@ -47,7 +49,7 @@ public class World : MonoBehaviour {
             if (_needsMesh.Count == 0) return;
             info = _needsMesh.Dequeue();
         }
-        GameObject obj = (GameObject)GameObject.Instantiate(_prefab, info.position, Quaternion.identity);
+        GameObject obj = (GameObject)GameObject.Instantiate(_prefab, info.getPos(), Quaternion.identity);
         Chunk chunk = ((Chunk)obj.GetComponent<Chunk>());
         chunk.setInfo(info);
         chunk.generateMesh();
@@ -58,12 +60,12 @@ public class World : MonoBehaviour {
         _running = false;
     }
 
-    public byte getPotentialBlock(Vector3 pos)
+    public static byte getPotentialBlock(Vector3 pos)
     {
         return getPotentialBlock(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
     }
 
-    public byte getPotentialBlock(int x, int y, int z)
+    public static byte getPotentialBlock(int x, int y, int z)
     {
         if (y == 0) return 1;
         float noise1 = Noise.getNoiseValue(new Vector3(x, y, z) / 16f);
@@ -107,4 +109,19 @@ public class World : MonoBehaviour {
             }
         }
     }
+
+	public List<ChunkInfo> getChunkInfos()
+	{
+		return _infos;
+	}
+
+	public void setChunkInfos(List<ChunkInfo> input)
+	{
+		_infos = input;
+		foreach ( ChunkInfo info in input )
+		lock(_needsGenerated)
+		{
+			_needsMesh.Enqueue(info);
+		}
+	}
 }

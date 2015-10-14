@@ -29,6 +29,11 @@ public class Chunk : MonoBehaviour {
         _info = info;
     }
 
+	public ChunkInfo getInfo()
+	{
+		return _info;
+	}
+
     public byte getBlockAt(int x, int y, int z)
     {
         return _info.map[x, y, z];
