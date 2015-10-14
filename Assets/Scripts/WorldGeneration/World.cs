@@ -7,7 +7,8 @@ public class World : MonoBehaviour {
     [SerializeField]
     private GameObject _prefab;
     private Dictionary<int, Dictionary<int, Chunk>> _chunks = new Dictionary<int, Dictionary<int, Chunk>>();
-    private Queue<ChunkInfo> _needsGenerated;
+	private List<ChunkInfo> _infos = new List<ChunkInfo> ();
+	private Queue<ChunkInfo> _needsGenerated;
     private Queue<ChunkInfo> _needsMesh;
     private Queue<ChunkInfo> _fullyGenerated;
     private volatile bool _running;
@@ -26,14 +27,15 @@ public class World : MonoBehaviour {
 
     void Start()
     {
-        for (int x = -2; x < 3; x++)
+        for (int x = -50; x < 50; x++)
         {
-            for (int z = -2; z < 3; z++)
+            for (int z = -50; z < 50; z++)
             {
                 ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
                 lock(_needsGenerated)
                 {
                     _needsGenerated.Enqueue(info);
+					_infos.Add(info);
                 }
 			}
         }
@@ -107,4 +109,19 @@ public class World : MonoBehaviour {
             }
         }
     }
+
+	public List<ChunkInfo> getChunkInfos()
+	{
+		return _infos;
+	}
+
+	public void setChunkInfos(List<ChunkInfo> input)
+	{
+		_infos = input;
+		foreach ( ChunkInfo info in input )
+		lock(_needsGenerated)
+		{
+			_needsMesh.Enqueue(info);
+		}
+	}
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -8,7 +9,7 @@ public class SaveWorld : MonoBehaviour
 	{
 
 	// Will not work for web, but all other platforms
-	public void save( ChunkInfo to_save )
+	public void save( List<ChunkInfo> to_save )
 		{
 		BinaryFormatter my_bf = new BinaryFormatter();
 		FileStream my_file = File.Create( Application.persistentDataPath + "/saveFile.dat" );
@@ -16,14 +17,18 @@ public class SaveWorld : MonoBehaviour
 		my_file.Close();
 		}
 
-	public void load( ChunkInfo to_load )
+	public List<ChunkInfo> load( )
 		{
 		if (File.Exists( Application.persistentDataPath + "/saveFile.dat" ) )
 			{
+			List<ChunkInfo> to_return;
 			BinaryFormatter my_bf = new BinaryFormatter();
 			FileStream my_file = File.Open( Application.persistentDataPath + "/saveFile.dat", FileMode.Open );
-			to_load = (ChunkInfo)my_bf.Deserialize( my_file );
+			to_return = (List<ChunkInfo>)my_bf.Deserialize( my_file );
 			my_file.Close ();
+			return to_return;
 			}
+		return null;
 		}
 	}
+
