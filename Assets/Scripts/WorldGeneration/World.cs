@@ -22,14 +22,14 @@ public class World : MonoBehaviour {
         _needsMesh = new Queue<ChunkInfo>();
         _running = true;
         generationThread1 = new System.Threading.Thread(generateChunks);
-        generationThread1.Start();
+        //generationThread1.Start();
     }
 
     void Start()
     {
-        for (int x = -50; x < 50; x++)
+        for (int x = -10; x < 10; x++)
         {
-            for (int z = -50; z < 50; z++)
+            for (int z = -10; z < 10; z++)
             {
                 ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
                 lock(_needsGenerated)
