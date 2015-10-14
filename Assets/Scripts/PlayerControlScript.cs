@@ -68,9 +68,33 @@ public class PlayerControlScript : MonoBehaviour {
 		if (Input.GetButtonDown("XboxRBumper")) {
 		
 			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-				print (crosshairHit.transform);
-				Vector3 newLocation = crosshairHit.transform.position + crosshairHit.normal;
-				print(newLocation);
+				//print (crosshairHit.point);
+
+
+
+				float tempX = crosshairHit.point.x + crosshairHit.normal.x;
+				float tempY = crosshairHit.point.y + crosshairHit.normal.y;
+				float tempZ = crosshairHit.point.z + crosshairHit.normal.z;
+
+				tempX = (int) Mathf.Floor(tempX);
+				tempY = (int) Mathf.Floor(tempY);
+				tempZ = (int) Mathf.Floor(tempZ);
+
+				tempX += 0.5F;
+				tempY += 0.5F; //cause YOLO
+				tempZ += 0.5F;
+
+				if (crosshairHit.normal.y == 1) {
+					tempY -= 1.0F; //math is weird. 
+				}
+
+				if (crosshairHit.normal.x == 1) {
+					tempX -= 1.0F; //math is still weird...
+				}
+
+				Vector3 newLocation = new Vector3(tempX, tempY, tempZ);
+				//print(newLocation);
+
 				//checks if the space is open to place a block. 
 				if (!Physics.CheckSphere(newLocation, CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
 					//TODO remove from inventory! 
