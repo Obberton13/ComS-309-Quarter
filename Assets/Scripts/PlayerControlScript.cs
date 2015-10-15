@@ -39,7 +39,7 @@ public class PlayerControlScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		CharControl = GetComponent<CharacterController>();
-		PlayerCamera = transform.Find("OVRCameraRig").gameObject;
+		PlayerCamera = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").gameObject;
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
 		ms = GameObject.Find ("_Manager").GetComponent<MenuState>();
