@@ -22,7 +22,7 @@ public class World : MonoBehaviour {
         _needsMesh = new Queue<ChunkInfo>();
         _running = true;
         generationThread1 = new System.Threading.Thread(generateChunks);
-        //generationThread1.Start();
+        generationThread1.Start();
     }
 
     void Start()

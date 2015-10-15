@@ -11,7 +11,12 @@ public class LoadButton : MonoBehaviour
 		{
 			SaveWorld my_save = this.GetComponent<SaveWorld>();
 			my_save.load();
-			
 		}
+	}
+
+	public void loadGame()
+	{
+		SaveWorld my_save = this.GetComponent<SaveWorld>();
+		my_save.load();
 	}
 }

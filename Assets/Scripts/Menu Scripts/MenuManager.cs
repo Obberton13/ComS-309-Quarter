@@ -45,6 +45,11 @@ public class MenuManager : MonoBehaviour {
 			++selected;
 			checkSelection();
 		}
+		else if (Input.GetKeyDown("escape"))
+		{
+			GameObject menu = GameObject.Find ("MainMenu");
+			menu.GetComponent<Canvas>().enabled = true;
+		}
 	}
 
 	public void highlightSelected (Buttons selected) {
@@ -59,6 +64,24 @@ public class MenuManager : MonoBehaviour {
 	
 	public void makeMenuSelection(int selection){
 		Debug.Log("FROM: makeMenuSelection " + selection);
+
+		switch (selection) {
+		case 0:
+			GameObject menu = GameObject.Find ("MainMenu");
+			menu.GetComponent<Canvas>().enabled = false;
+			break;
+		case 1:
+			GameObject.Find ("SaveObject").GetComponent<SaveWorld>().load();
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		default:
+			break;
+		}
 	}
 
 	public void checkSelection(){
@@ -71,7 +94,7 @@ public class MenuManager : MonoBehaviour {
 
     public void hoverSelection(int button)
     {
-       Debug.Log("This is a message from mouseEnter");
+       //Debug.Log("This is a message from mouseEnter");
        selected = (Buttons) button + 1;
     }
 }
