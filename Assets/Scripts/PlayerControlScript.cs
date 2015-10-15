@@ -13,10 +13,12 @@ public class PlayerControlScript : MonoBehaviour {
 	private float gravity = 20.0F;
 
 	[SerializeField]
-	private float rotateSpeed = 45.0F;
+	private float rotateSpeed = 90.0F;
 
 	[SerializeField]
 	private GameObject basicBlock;
+    
+    private World _world;
 
 	private CharacterController CharControl;
 	private Vector3 moveDir;
@@ -40,6 +42,7 @@ public class PlayerControlScript : MonoBehaviour {
 		PlayerCamera = transform.Find("OVRCameraRig").gameObject;
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
+        _world = GameObject.Find("Main Camera").GetComponent<World>();
 	}
 	
 	// Update is called once per frame
@@ -68,36 +71,45 @@ public class PlayerControlScript : MonoBehaviour {
 		if (Input.GetButtonDown("XboxRBumper")) {
 		
 			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-				//print (crosshairHit.point);
+                //print (crosshairHit.point);
 
+                Debug.Log(crosshairHit.point);
 
+                float tempX = Mathf.FloorToInt(crosshairHit.point.x + crosshairHit.normal.x / 2f) + .5f;
+                float tempY = Mathf.FloorToInt(crosshairHit.point.y + crosshairHit.normal.y / 2f) + .5f;
+                float tempZ = Mathf.FloorToInt(crosshairHit.point.z + crosshairHit.normal.z / 2f) + .5f;
 
-				float tempX = crosshairHit.point.x + crosshairHit.normal.x;
-				float tempY = crosshairHit.point.y + crosshairHit.normal.y;
-				float tempZ = crosshairHit.point.z + crosshairHit.normal.z;
+				//tempX = (int) Mathf.FloorToInt(tempX); //I have a feeling this was giving a floating point error that made this cast to different values.
+				//tempY = (int) Mathf.FloorToInt(tempY); //That is why sometimes Ryan's thing was spawning blocks underground.
+				//tempZ = (int) Mathf.FloorToInt(tempZ);
 
-				tempX = (int) Mathf.Floor(tempX);
-				tempY = (int) Mathf.Floor(tempY);
-				tempZ = (int) Mathf.Floor(tempZ);
+				//tempX += 0.5F;
+				//tempY += 0.5F; //cause YOLO
+				//tempZ += 0.5F; 
 
-				tempX += 0.5F;
-				tempY += 0.5F; //cause YOLO
-				tempZ += 0.5F;
+				//if (crosshairHit.normal.y == 1) {
+				//	tempY -= 1.0F; //math is weird. 
+				//}
 
-				if (crosshairHit.normal.y == 1) {
-					tempY -= 1.0F; //math is weird. 
-				}
+				//if (crosshairHit.normal.x == 1) {
+				//	tempX -= 1.0F; //math is still weird...
+				//}
 
-				if (crosshairHit.normal.x == 1) {
-					tempX -= 1.0F; //math is still weird...
-				}
+    //            if(crosshairHit.normal.z == 1)
+    //            {
+    //                tempZ -= 1.0F; //math is definitely not weird at all. This makes perfect sense if you think about it.
+    //            }
 
 				Vector3 newLocation = new Vector3(tempX, tempY, tempZ);
 				//print(newLocation);
 
-				//checks if the space is open to place a block. 
+				//checks if the space is open to place a block.
 				if (!Physics.CheckSphere(newLocation, CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
-					//TODO remove from inventory! 
+
+                    //TODO remove from inventory! 
+                    //TODO place the object in the chunk instead of instantiating
+                    _world.putBlock(newLocation, 1);
+                    //Debug.Log(newLocation);
 					Instantiate(basicBlock, newLocation, Quaternion.identity);
 				}
 			}
@@ -106,17 +118,19 @@ public class PlayerControlScript : MonoBehaviour {
 
 		if (Input.GetButtonDown("XboxLBumper")) {
 			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-
-				//TODO add to inventory!
-				Destroy(crosshairHit.transform.gameObject);
-			}
+                if (!crosshairHit.transform.GetComponent<MeshCollider>())
+                {
+				    Destroy(crosshairHit.transform.gameObject);
+                }
+                //TODO add to inventory!
+            }
 		}
 		
 	}
 
-	void OnGUI()
-	{
-		//Draw the crosshair at the center of the screen.
-		GUI.DrawTexture(new Rect((Screen.width-crosshairTexture.width*crosshairScale)/2 ,(Screen.height-crosshairTexture.height*crosshairScale)/2, crosshairTexture.width*crosshairScale, crosshairTexture.height*crosshairScale),crosshairTexture);
-	}
+    void OnGUI()
+    {
+        //Draw the crosshair at the center of the screen.
+        GUI.DrawTexture(new Rect((Screen.width - crosshairTexture.width * crosshairScale) / 2, (Screen.height - crosshairTexture.height * crosshairScale) / 2, crosshairTexture.width * crosshairScale, crosshairTexture.height * crosshairScale), crosshairTexture);
+    }
 }

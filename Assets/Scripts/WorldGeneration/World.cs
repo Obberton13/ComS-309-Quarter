@@ -22,7 +22,7 @@ public class World : MonoBehaviour {
         _needsMesh = new Queue<ChunkInfo>();
         _running = true;
         generationThread1 = new System.Threading.Thread(generateChunks);
-        //generationThread1.Start();
+        generationThread1.Start();
     }
 
     void Start()
@@ -53,6 +53,14 @@ public class World : MonoBehaviour {
         Chunk chunk = ((Chunk)obj.GetComponent<Chunk>());
         chunk.setInfo(info);
         chunk.generateMesh();
+        Vector3 pos = info.getPos();
+        int x = Mathf.FloorToInt(pos.x / Constants.chunkWidth);
+        int z = Mathf.FloorToInt(pos.z / Constants.chunkWidth);
+        if(!_chunks.ContainsKey(x))
+        {
+            _chunks.Add(x, new Dictionary<int, Chunk>());
+        }
+        _chunks[x].Add(z, chunk);
     }
 
     void OnApplicationQuit()
@@ -109,7 +117,7 @@ public class World : MonoBehaviour {
             }
         }
     }
-
+    
 	public List<ChunkInfo> getChunkInfos()
 	{
 		return _infos;
@@ -124,4 +132,12 @@ public class World : MonoBehaviour {
 			_needsMesh.Enqueue(info);
 		}
 	}
+
+    public void putBlock(Vector3 pos, byte type)
+    {
+        int chunkX = Mathf.FloorToInt(pos.x / Constants.chunkWidth);
+        int chunkZ = Mathf.FloorToInt(pos.z / Constants.chunkWidth);
+        Chunk chunk = _chunks[chunkX][chunkZ];
+        //Debug.Log(pos);
+    }
 }
