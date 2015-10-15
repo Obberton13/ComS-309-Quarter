@@ -133,11 +133,19 @@ public class World : MonoBehaviour {
 		}
 	}
 
-    public void putBlock(Vector3 pos, byte type)
+    public void putBlock(int x, int y, int z, byte type)
     {
-        int chunkX = Mathf.FloorToInt(pos.x / Constants.chunkWidth);
-        int chunkZ = Mathf.FloorToInt(pos.z / Constants.chunkWidth);
+        int chunkX = Mathf.FloorToInt((float)x / Constants.chunkWidth);
+        int chunkZ = Mathf.FloorToInt((float)z / Constants.chunkWidth);
         Chunk chunk = _chunks[chunkX][chunkZ];
-        //Debug.Log(pos);
+        //How many debug.logs does it take to realize that integer division is a thing that truncates toward 0?
+        //Debug.Log(x / Constants.chunkWidth);
+        //Debug.Log(Mathf.FloorToInt(-9.5f));
+        //Debug.Log(Mathf.FloorToInt(x / Constants.chunkWidth));
+        //Debug.Log("Set Block: " + x + ", " + y + ", " + z + " to Type: " + type);
+        //Debug.Log("On chunk: " + chunkX + ", " + chunkZ);
+        chunk.getInfo().map[(int)Mathf.Repeat(x, Constants.chunkWidth), y, (int)Mathf.Repeat(z, Constants.chunkWidth)] = type;
+        chunk.generateMesh();
+
     }
 }

@@ -75,9 +75,9 @@ public class PlayerControlScript : MonoBehaviour {
 
                 Debug.Log(crosshairHit.point);
 
-                float tempX = Mathf.FloorToInt(crosshairHit.point.x + crosshairHit.normal.x / 2f) + .5f;
-                float tempY = Mathf.FloorToInt(crosshairHit.point.y + crosshairHit.normal.y / 2f) + .5f;
-                float tempZ = Mathf.FloorToInt(crosshairHit.point.z + crosshairHit.normal.z / 2f) + .5f;
+                int tempX = Mathf.FloorToInt(crosshairHit.point.x + crosshairHit.normal.x / 2f);
+                int tempY = Mathf.FloorToInt(crosshairHit.point.y + crosshairHit.normal.y / 2f);
+                int tempZ = Mathf.FloorToInt(crosshairHit.point.z + crosshairHit.normal.z / 2f);
 
 				//tempX = (int) Mathf.FloorToInt(tempX); //I have a feeling this was giving a floating point error that made this cast to different values.
 				//tempY = (int) Mathf.FloorToInt(tempY); //That is why sometimes Ryan's thing was spawning blocks underground.
@@ -104,13 +104,13 @@ public class PlayerControlScript : MonoBehaviour {
 				//print(newLocation);
 
 				//checks if the space is open to place a block.
-				if (!Physics.CheckSphere(newLocation, CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
+				if (!Physics.CheckSphere(newLocation + new Vector3(.5f, .5f, .5f), CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
 
                     //TODO remove from inventory! 
                     //TODO place the object in the chunk instead of instantiating
-                    _world.putBlock(newLocation, 1);
+                    _world.putBlock(tempX, tempY, tempZ, 1);
                     //Debug.Log(newLocation);
-					Instantiate(basicBlock, newLocation, Quaternion.identity);
+					//Instantiate(basicBlock, newLocation, Quaternion.identity);
 				}
 			}
 
@@ -122,6 +122,7 @@ public class PlayerControlScript : MonoBehaviour {
                 {
 				    Destroy(crosshairHit.transform.gameObject);
                 }
+                //TODO remove things from the map.
                 //TODO add to inventory!
             }
 		}
