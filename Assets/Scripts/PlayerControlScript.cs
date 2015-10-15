@@ -37,7 +37,7 @@ public class PlayerControlScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		CharControl = GetComponent<CharacterController>();
-		PlayerCamera = transform.Find("OVRCameraRig").gameObject;
+		PlayerCamera = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").gameObject;
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
 	}
@@ -68,6 +68,7 @@ public class PlayerControlScript : MonoBehaviour {
 		if (Input.GetButtonDown("XboxRBumper")) {
 		
 			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+
 				//print (crosshairHit.point);
 
 
