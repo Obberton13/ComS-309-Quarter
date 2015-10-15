@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class World : MonoBehaviour {
 
+	int chunk_count = 0;
+
     [SerializeField]
     private GameObject _prefab;
     private Dictionary<int, Dictionary<int, Chunk>> _chunks = new Dictionary<int, Dictionary<int, Chunk>>();
@@ -22,20 +24,20 @@ public class World : MonoBehaviour {
         _needsMesh = new Queue<ChunkInfo>();
         _running = true;
         generationThread1 = new System.Threading.Thread(generateChunks);
-        //generationThread1.Start();
+        generationThread1.Start();
     }
 
     void Start()
     {
-        for (int x = -10; x < 10; x++)
+        for (int x = -2; x < 3; x++)
         {
-            for (int z = -10; z < 10; z++)
+            for (int z = -2; z < 3; z++)
             {
                 ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
                 lock(_needsGenerated)
                 {
                     _needsGenerated.Enqueue(info);
-					_infos.Add(info);
+					_infos.Add (info);
                 }
 			}
         }
@@ -53,6 +55,16 @@ public class World : MonoBehaviour {
         Chunk chunk = ((Chunk)obj.GetComponent<Chunk>());
         chunk.setInfo(info);
         chunk.generateMesh();
+
+		// Add generated chunks to lookup-table, _chunks
+		Dictionary<int, Chunk> inner = null;
+		int x = (int)chunk.getInfo ().getPos ().x;
+		int z = (int)chunk.getInfo ().getPos ().z;
+		if (!_chunks.TryGetValue (x, out inner)) {
+			inner = new Dictionary<int, Chunk>();
+			_chunks.Add (x, inner );
+		}
+		inner.Add (z, chunk);
     }
 
     void OnApplicationQuit()
@@ -109,19 +121,38 @@ public class World : MonoBehaviour {
             }
         }
     }
-
+	
+	/* Returns (Array)List of all generated ChunkInfo objects */
 	public List<ChunkInfo> getChunkInfos()
 	{
 		return _infos;
 	}
 
+	/* Sets the current ChunkInfos to the (Array)List given */
 	public void setChunkInfos(List<ChunkInfo> input)
 	{
+		_infos.Clear();
 		_infos = input;
+
+		// Iterate through provided ChunkInfos, queue for mesh_generation
 		foreach ( ChunkInfo info in input )
 		lock(_needsGenerated)
 		{
 			_needsMesh.Enqueue(info);
 		}
+	}
+
+	/* Clear all world-generation data */
+	public void clearChunkInfos()
+	{
+		foreach (KeyValuePair<int, Dictionary<int, Chunk>> Dict in _chunks)
+		{
+			foreach (KeyValuePair<int, Chunk> entry in Dict.Value) 
+			{
+				entry.Value.destroy ();
+			}
+			Dict.Value.Clear();
+		}
+		_infos.Clear ();
 	}
 }
