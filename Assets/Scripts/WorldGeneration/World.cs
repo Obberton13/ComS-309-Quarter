@@ -14,21 +14,24 @@ public class World : MonoBehaviour {
     private Queue<ChunkInfo> _needsMesh;
     private Queue<ChunkInfo> _fullyGenerated;
     private volatile bool _running;
+	public volatile bool _isGenerating;
     private System.Threading.Thread generationThread1;
 
     void Awake()
     {
-        Random.seed = 1;
+        //Random.seed = 1;
         Noise.init();
         _needsGenerated = new Queue<ChunkInfo>();
         _needsMesh = new Queue<ChunkInfo>();
         _running = true;
         generationThread1 = new System.Threading.Thread(generateChunks);
         generationThread1.Start();
+		_isGenerating = true;
     }
 
     void Start()
     {
+		GameObject.Find ("_Manager").GetComponent<MenuState>().menuState = MenuState.MenuStates.inMainMenu;
         for (int x = -2; x < 3; x++)
         {
             for (int z = -2; z < 3; z++)
@@ -48,7 +51,10 @@ public class World : MonoBehaviour {
         ChunkInfo info = null;
         lock (_needsMesh)
         {
-            if (_needsMesh.Count == 0) return;
+            if (_needsMesh.Count == 0){
+				_isGenerating = false;
+				return;
+			}
             info = _needsMesh.Dequeue();
         }
         GameObject obj = (GameObject)GameObject.Instantiate(_prefab, info.getPos(), Quaternion.identity);
@@ -111,7 +117,12 @@ public class World : MonoBehaviour {
             ChunkInfo toGenerate;
             lock (_needsGenerated)
             {
-                if (_needsGenerated.Count == 0) continue;
+                if (_needsGenerated.Count == 0) 
+				{
+					_isGenerating = false;
+					continue;
+				}
+				_isGenerating = true;
                 toGenerate = _needsGenerated.Dequeue();
             }
             toGenerate.generate();
@@ -138,6 +149,7 @@ public class World : MonoBehaviour {
 		foreach ( ChunkInfo info in input )
 		lock(_needsGenerated)
 		{
+			_isGenerating = true;
 			_needsMesh.Enqueue(info);
 		}
 	}

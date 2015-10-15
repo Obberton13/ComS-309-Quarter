@@ -17,12 +17,14 @@ public class MenuManager : MonoBehaviour {
 
 	public Buttons selected;
     public Buttons oldVal;
+	public MenuState ms;
 
 	void Start () {
 		selected = Buttons.newGame;
         oldVal = selected;
 		highlightSelected (selected);
         mousedOver = false;
+		ms = GameObject.Find ("_Manager").GetComponent<MenuState>();
 	}
 	
 	void Update () {
@@ -35,20 +37,29 @@ public class MenuManager : MonoBehaviour {
             highlightSelected(selected);
             oldVal = selected;
         }
-
-        // Checking for input
-        if (Input.GetKeyDown ("up")) {
-			--selected;
-			checkSelection();
+		if (ms.menuState == MenuState.MenuStates.inMainMenu){
+			// Checking for input
+			if (Input.GetKeyDown ("up") /*|| Input.GetAxis("Vertical") > 0.4f*/) {
+				--selected;
+				checkSelection ();
+			} else if (Input.GetKeyDown ("down") /*|| Input.GetAxis("Vertical") < 0.4f*/) {
+				++selected;
+				checkSelection ();
+			} else if (Input.GetKeyDown ("escape") || Input.GetButtonDown("XboxStart")) {
+				GameObject menu = GameObject.Find ("MainMenu");
+				menu.GetComponent<Canvas> ().enabled = true;
+				ms.menuState = MenuState.MenuStates.inMainMenu;
+			} else if (Input.GetKeyDown("return") || Input.GetButtonDown ("XboxA")) {
+				Debug.Log("FROM: enter " + selected);
+				makeMenuSelection(((int)selected)-1);
+			}
 		}
-		else if (Input.GetKeyDown ("down")) {
-			++selected;
-			checkSelection();
-		}
-		else if (Input.GetKeyDown("escape"))
-		{
-			GameObject menu = GameObject.Find ("MainMenu");
-			menu.GetComponent<Canvas>().enabled = true;
+		else if (ms.menuState == MenuState.MenuStates.playerPlaying){
+			if (Input.GetKeyDown ("escape") || Input.GetButtonDown("XboxStart")) {
+				GameObject menu = GameObject.Find ("MainMenu");
+				menu.GetComponent<Canvas> ().enabled = true;
+				ms.menuState = MenuState.MenuStates.inMainMenu;
+			}
 		}
 	}
 
@@ -67,13 +78,19 @@ public class MenuManager : MonoBehaviour {
 
 		switch (selection) {
 		case 0:
-			GameObject menu = GameObject.Find ("MainMenu");
-			menu.GetComponent<Canvas>().enabled = false;
+			GameObject world = GameObject.Find ("_Manager");
+			if (!world.GetComponent<World>()._isGenerating)
+			{
+				ms.menuState = MenuState.MenuStates.playerPlaying;
+				GameObject menu = GameObject.Find ("MainMenu");
+				menu.GetComponent<Canvas>().enabled = false;
+			}
 			break;
 		case 1:
 			GameObject.Find ("SaveObject").GetComponent<SaveWorld>().load();
 			break;
 		case 2:
+			GameObject.Find ("SaveObject").GetComponent<SaveWorld>().save();
 			break;
 		case 3:
 			break;
