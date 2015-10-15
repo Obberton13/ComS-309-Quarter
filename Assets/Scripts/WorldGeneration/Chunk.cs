@@ -160,4 +160,9 @@ public class Chunk : MonoBehaviour {
         if (x < Constants.chunkWidth && x >= 0 && z < Constants.chunkWidth && z >= 0 && y < Constants.chunkHeight && y >= 0) return _info.map[x, y, z];
         return 0;
     }
+
+	public void destroy()
+	{
+		Destroy (gameObject);
+	}
 }

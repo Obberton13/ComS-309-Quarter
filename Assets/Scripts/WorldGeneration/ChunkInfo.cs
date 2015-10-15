@@ -38,6 +38,7 @@ public class ChunkInfo {
         Vector3 pos = new Vector3(x, y, z) + new Vector3(this.x, this.y, this.z);
         return World.getPotentialBlock(pos);
     }
+
 	public Vector3 getPos()
 	{
 		return new Vector3(this.x, this.y, this.z);
