@@ -361,7 +361,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GuiSize: {x: 300, y: 300}
-  InputLine: 
+  InputLine: Obberton13?
 --- !u!114 &1342840823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -373,16 +373,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02d148d0890b2d44dbdf7f1c1b39a499, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ChatAppId: 
+  ChatAppId: 16db4e8b-1177-42c4-a211-03f141522eba
   ChannelsToJoinOnConnect:
   - 6d61696e
-  HistoryLengthToFetch: 0
+  HistoryLengthToFetch: 500
   DemoPublishOnSubscribe: 1
   GuiRect:
+    serializedVersion: 2
     x: 0
     y: 0
-    width: 400
-    height: 300
+    width: 600
+    height: 600
   IsVisible: 1
   AlignBottom: 1
   FullScreen: 0
