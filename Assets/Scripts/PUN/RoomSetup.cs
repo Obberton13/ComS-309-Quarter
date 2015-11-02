@@ -32,12 +32,13 @@ public class RoomSetup : MonoBehaviour {
 			GameObject.Find("Game Controller").GetComponent<World>().enabled = true;
 		}
 
-		GameObject player = PhotonNetwork.Instantiate("playerPrefab", new Vector3(-150, 79, -150), Quaternion.identity, 0);
+		GameObject player = PhotonNetwork.Instantiate("playerPrefab2", new Vector3(-150, 79, -150), Quaternion.identity, 0);
 		//incase we wanna do stuff with the player.
 		player.GetComponent<PlayerControlScript>().enabled = true;
-		GameObject PlayerCamera = transform.Find("OVRCameraRig").gameObject;
-		PlayerCamera.GetComponent<OVRCameraRig>().enabled = true;
-		PlayerCamera.GetComponent<OVRManager>().enabled = true;
+		GameObject PlayerCamera = transform.Find("CenterEyeAnchor").gameObject;
+		PlayerCamera.GetComponent<Camera>().enabled = true;
+		PlayerCamera.GetComponent<AudioListener>().enabled = true;
+
 
 	}
 
