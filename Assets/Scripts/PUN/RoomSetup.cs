@@ -35,6 +35,10 @@ public class RoomSetup : MonoBehaviour {
 		GameObject player = PhotonNetwork.Instantiate("playerPrefab", new Vector3(-150, 79, -150), Quaternion.identity, 0);
 		//incase we wanna do stuff with the player.
 		player.GetComponent<PlayerControlScript>().enabled = true;
+		GameObject PlayerCamera = transform.Find("OVRCameraRig").gameObject;
+		PlayerCamera.GetComponent<OVRCameraRig>().enabled = true;
+		PlayerCamera.GetComponent<OVRManager>().enabled = true;
+
 	}
 
 }
