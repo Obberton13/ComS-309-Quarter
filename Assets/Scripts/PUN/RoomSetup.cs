@@ -26,8 +26,15 @@ public class RoomSetup : MonoBehaviour {
 
 	void OnJoinedRoom()
 	{
+
+		if (PhotonNetwork.playerList.Length == 1)
+		{
+			GameObject.Find("Game Controller").GetComponent<World>().enabled = true;
+		}
+
 		GameObject player = PhotonNetwork.Instantiate("playerPrefab", new Vector3(-150, 79, -150), Quaternion.identity, 0);
 		//incase we wanna do stuff with the player.
+		player.GetComponent<PlayerControlScript>().enabled = true;
 	}
 
 }
