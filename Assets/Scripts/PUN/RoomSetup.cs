@@ -27,17 +27,22 @@ public class RoomSetup : MonoBehaviour {
 	void OnJoinedRoom()
 	{
 
+		//only the first player in the room needs to generate a world
 		if (PhotonNetwork.playerList.Length == 1)
 		{
 			GameObject.Find("Game Controller").GetComponent<World>().enabled = true;
 		}
 
-		GameObject player = PhotonNetwork.Instantiate("playerPrefab2", new Vector3(-150, 79, -150), Quaternion.identity, 0);
-		//incase we wanna do stuff with the player.
+		//incase we wanna do stuff with the player. We do. See below.
+		//TODO change spawn point vector3.
+		GameObject player = PhotonNetwork.Instantiate("playerPrefab", new Vector3(-150, 79, -150), Quaternion.identity, 0);
+
+		//we should only be able to control our own player! 
 		player.GetComponent<PlayerControlScript>().enabled = true;
-		GameObject PlayerCamera = transform.Find("CenterEyeAnchor").gameObject;
-		PlayerCamera.GetComponent<Camera>().enabled = true;
-		PlayerCamera.GetComponent<AudioListener>().enabled = true;
+
+		//only one camera and audio listener in the local scene should be on.
+		player.GetComponentInChildren<Camera>().enabled = true;
+		player.GetComponentInChildren<AudioListener>().enabled = true;
 
 
 	}

@@ -49,7 +49,8 @@ public class World : MonoBehaviour {
             if (_needsMesh.Count == 0) return;
             info = _needsMesh.Dequeue();
         }
-        GameObject obj = (GameObject)GameObject.Instantiate(_prefab, info.getPos(), Quaternion.identity);
+        //GameObject obj = (GameObject) Instantiate(_prefab, info.getPos(), Quaternion.identity);
+		GameObject obj = PhotonNetwork.Instantiate("Chunk", info.getPos(), Quaternion.identity, 0);
         Chunk chunk = ((Chunk)obj.GetComponent<Chunk>());
         chunk.setInfo(info);
         chunk.generateMesh();

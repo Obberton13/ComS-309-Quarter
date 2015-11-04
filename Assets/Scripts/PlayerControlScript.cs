@@ -73,41 +73,18 @@ public class PlayerControlScript : MonoBehaviour {
 			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
                 //print (crosshairHit.point);
 
-                Debug.Log(crosshairHit.point);
+                //Debug.Log(crosshairHit.point);
 
                 int tempX = Mathf.FloorToInt(crosshairHit.point.x + crosshairHit.normal.x / 2f);
                 int tempY = Mathf.FloorToInt(crosshairHit.point.y + crosshairHit.normal.y / 2f);
                 int tempZ = Mathf.FloorToInt(crosshairHit.point.z + crosshairHit.normal.z / 2f);
 
-				//tempX = (int) Mathf.FloorToInt(tempX); //I have a feeling this was giving a floating point error that made this cast to different values.
-				//tempY = (int) Mathf.FloorToInt(tempY); //That is why sometimes Ryan's thing was spawning blocks underground.
-				//tempZ = (int) Mathf.FloorToInt(tempZ);
-
-				//tempX += 0.5F;
-				//tempY += 0.5F; //cause YOLO
-				//tempZ += 0.5F; 
-
-				//if (crosshairHit.normal.y == 1) {
-				//	tempY -= 1.0F; //math is weird. 
-				//}
-
-				//if (crosshairHit.normal.x == 1) {
-				//	tempX -= 1.0F; //math is still weird...
-				//}
-
-    //            if(crosshairHit.normal.z == 1)
-    //            {
-    //                tempZ -= 1.0F; //math is definitely not weird at all. This makes perfect sense if you think about it.
-    //            }
-
 				Vector3 newLocation = new Vector3(tempX, tempY, tempZ);
-				//print(newLocation);
 
 				//checks if the space is open to place a block.
 				if (!Physics.CheckSphere(newLocation + new Vector3(.5f, .5f, .5f), CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
 
                     //TODO remove from inventory! 
-                    //TODO place the object in the chunk instead of instantiating
                     _world.putBlock(tempX, tempY, tempZ, 1);
                     //Debug.Log(newLocation);
 					//Instantiate(basicBlock, newLocation, Quaternion.identity);
