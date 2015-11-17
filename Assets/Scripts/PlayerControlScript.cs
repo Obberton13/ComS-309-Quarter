@@ -51,7 +51,8 @@ public class PlayerControlScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		if(ms.menuState == MenuState.MenuStates.playerPlaying){
+		//if(ms.menuState == MenuState.MenuStates.playerPlaying){
+		if (true) { //TODO
 			//Move the camera in the X/Y direction
 			if (CharControl.isGrounded) {
 				moveDir = new Vector3 (Input.GetAxis ("Horizontal"), 0, Input.GetAxis ("Vertical"));
