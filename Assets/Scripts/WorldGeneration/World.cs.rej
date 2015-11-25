@@ -1,0 +1,122 @@
+***************
+*** 9,14 ****
+  	public bool is_owner = false;
+  	public bool request = false;
+  	public bool have_things = false;
+  
+      [SerializeField]
+      private GameObject _prefab;
+--- 9,17 ----
+  	public bool is_owner = false;
+  	public bool request = false;
+  	public bool have_things = false;
++ 	int rpc_test = 0;
++ 
++ 	byte[] test_arr = {0, 1, 0, 1, 0, 1, 0, 1};
+  
+      [SerializeField]
+      private GameObject _prefab;
+***************
+*** 43,51 ****
+  
+  	// used by owner to "send" chunks to client
+  	[PunRPC]
+- 	void syncChunks( byte[] incomming)
+  	{
+  		print ("In the middle of thing");
+  		this.have_things = true;
+  		this._infos = ByteArrayToChunkInfos(incomming);
+  		print (" size of imconning in sync is: "+incomming.Length );
+--- 46,56 ----
+  
+  	// used by owner to "send" chunks to client
+  	[PunRPC]
++ 	void syncChunks( byte[] incomming, int x)
+  	{
+  		print ("In the middle of thing");
++ 		print ("test variable is " + x);
++ 		this.rpc_test = x;
+  		this.have_things = true;
+  		this._infos = ByteArrayToChunkInfos(incomming);
+  		print (" size of imconning in sync is: "+incomming.Length );
+***************
+*** 82,88 ****
+  					}
+  				}
+  			}
+  		} else {
+  			photonView.RPC ("requestChunks", PhotonTargets.All, true );
+  		}
+  
+--- 87,104 ----
+  					}
+  				}
+  			}
++ 
++ 			// initialize test array
++ 			int i = 0;
++ 			for(i = 0; i < test_arr.Length; i++ )
++ 			{
++ 				test_arr[i] = 1;
++ 			}
++ 			// want to test to see how rpc is being called
++ 			rpc_test = 42;
+  		} else {
++ 			// this is what should be printed out if the call failed
++ 			rpc_test = 3;
+  			photonView.RPC ("requestChunks", PhotonTargets.All, true );
+  		}
+  
+***************
+*** 100,108 ****
+  		{
+  			have_things = false;
+  			print ("Trying to do things");
+  			int i;
+- 			for(i = 0; i < _infos.Count; i++ )
+  			{
+  				lock (_needsGenerated) {
+  					_needsGenerated.Enqueue (_infos[i]);
+  					_infos.Add (info);
+--- 116,126 ----
+  		{
+  			have_things = false;
+  			print ("Trying to do things");
++ 			print ( "on the client side, test_rpc is " + rpc_test );
+  			int i;
++ 			for(i = 0; i < 5; i++ )
+  			{
++ 				//print (" test_arr at " + i + " is: " + test_arr[i]);
+  				lock (_needsGenerated) {
+  					_needsGenerated.Enqueue (_infos[i]);
+  					_infos.Add (info);
+***************
+*** 134,142 ****
+  		// If is original owner, and chunks have been requested, send them.
+  		if(is_owner && request)
+  		{
+- 			List<ChunkInfo> test_list = _infos.GetRange(0, 10);
+  			byte[] intermediate = ChunkInfoToByteArray(test_list );
+- 			photonView.RPC("syncChunks", PhotonTargets.Others, intermediate);
+  			this.request = false;
+  		}
+  
+--- 152,169 ----
+  		// If is original owner, and chunks have been requested, send them.
+  		if(is_owner && request)
+  		{
++ 			List<ChunkInfo> test_list = _infos.GetRange(0, 5);
+  			byte[] intermediate = ChunkInfoToByteArray(test_list );
++ 			photonView.RPC("syncChunks", PhotonTargets.Others, intermediate, rpc_test);
++ 
++ 
++ 			// experiments with serialization
++ 
++ 			//List<ChunkInfo> test_list = ByteArrayToChunkInfos( intermediate );
++ 
++ 			//print ("Just converted, before was: "+_infos.Count + ", now is " +test_list.Count );
++ 
++ 			//print ( "admin should have just called syncChunks, should now print 42, not 3");
+  			this.request = false;
+  		}
+  

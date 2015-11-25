@@ -1,0 +1,259 @@
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
+
+public class World :  Photon.PunBehaviour {
+
+	public bool is_owner = false;
+	public bool request = false;
+	public bool have_things = false;
+	int rpc_test = 0;
+
+	byte[] test_arr = {0, 1, 0, 1, 0, 1, 0, 1};
+
+    [SerializeField]
+    private GameObject _prefab;
+    private Dictionary<int, Dictionary<int, Chunk>> _chunks = new Dictionary<int, Dictionary<int, Chunk>>();
+	private List<ChunkInfo> _infos = new List<ChunkInfo> ();
+	private Queue<ChunkInfo> _needsGenerated;
+    private Queue<ChunkInfo> _needsMesh;
+    private Queue<ChunkInfo> _fullyGenerated;
+    private volatile bool _running;
+    private System.Threading.Thread generationThread1;
+	private PhotonView pv;
+
+	public byte[] ChunkInfoToByteArray(List<ChunkInfo> infos)
+	{
+		MemoryStream ms = new MemoryStream();
+		print (" Trying to serialize something with " + infos.Count+ " elements\n");
+		BinaryFormatter bf = new BinaryFormatter();
+		bf.Serialize(ms, infos);
+		return ms.ToArray();
+
+	}
+	
+	public List<ChunkInfo> ByteArrayToChunkInfos(byte[] arrBytes)
+	{
+		List<ChunkInfo> to_return;
+		MemoryStream memStream = new MemoryStream(arrBytes);
+		BinaryFormatter bf = new BinaryFormatter();
+		to_return = (List<ChunkInfo> )bf.Deserialize(memStream);
+		print ( "created list with "+to_return.Count+" elements");
+		return to_return;
+	}
+
+	// used by owner to "send" chunks to client
+	[PunRPC]
+	void syncChunks( byte[] incomming, int x)
+	{
+		print ("In the middle of thing");
+		print ("test variable is " + x);
+		this.rpc_test = x;
+		this.have_things = true;
+		this._infos = ByteArrayToChunkInfos(incomming);
+		print (" size of imconning in sync is: "+incomming.Length );
+		print ("Have_things is now true");
+	}
+
+	// used to have a client request the chunks from owner
+	[PunRPC]
+	void requestChunks( bool request )
+	{
+		this.request = request;
+	}
+
+    void Awake()
+    {
+        Random.seed = 1;
+        Noise.init();
+        _needsGenerated = new Queue<ChunkInfo>();
+        _needsMesh = new Queue<ChunkInfo>();
+        _running = true;
+        generationThread1 = new System.Threading.Thread(generateChunks);
+        generationThread1.Start();
+    }
+
+    void Start()
+	{
+		if (is_owner) {
+			for (int x = -10; x < 10; x++) {
+				for (int z = -10; z < 10; z++) {
+					ChunkInfo info = new ChunkInfo (new Vector3 (Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
+					lock (_needsGenerated) {
+						_needsGenerated.Enqueue (info);
+						_infos.Add (info);
+					}
+				}
+			}
+
+			// initialize test array
+			int i = 0;
+			for(i = 0; i < test_arr.Length; i++ )
+			{
+				test_arr[i] = 1;
+			}
+			// want to test to see how rpc is being called
+			rpc_test = 42;
+		} else {
+			// this is what should be printed out if the call failed
+			rpc_test = 3;
+			photonView.RPC ("requestChunks", PhotonTargets.All, true );
+		}
+
+    }
+
+    void Update()
+    {
+        ChunkInfo info = null;
+		GameObject obj;
+		Chunk chunk = null;
+		int x, z;
+
+		// if we are not the owner, and we have the new chunks
+		if( have_things && !is_owner )
+		{
+			have_things = false;
+			print ("Trying to do things");
+			print ( "on the client side, test_rpc is " + rpc_test );
+			int i;
+			for(i = 0; i < 5; i++ )
+			{
+				//print (" test_arr at " + i + " is: " + test_arr[i]);
+				lock (_needsGenerated) {
+					_needsGenerated.Enqueue (_infos[i]);
+					_infos.Add (info);
+				}
+			}
+
+		}
+		
+		lock (_needsMesh)
+        {
+            if (_needsMesh.Count == 0) return;
+            info = _needsMesh.Dequeue();
+			Vector3 pos = info.getPos();
+			x = Mathf.FloorToInt(pos.x / Constants.chunkWidth);
+			z = Mathf.FloorToInt(pos.z / Constants.chunkWidth);
+        }
+
+		    obj = (GameObject)Instantiate (_prefab, info.getPos (), Quaternion.identity);
+			chunk = ((Chunk)obj.GetComponent<Chunk>());
+			chunk.setInfo(info);
+			chunk.generateMesh();
+
+			if(!_chunks.ContainsKey(x))
+			{
+				_chunks.Add(x, new Dictionary<int, Chunk>());
+			}
+			_chunks[x].Add(z, chunk);
+
+		// If is original owner, and chunks have been requested, send them.
+		if(is_owner && request)
+		{
+			List<ChunkInfo> test_list = _infos.GetRange(0, 5);
+			byte[] intermediate = ChunkInfoToByteArray(test_list );
+			photonView.RPC("syncChunks", PhotonTargets.Others, intermediate, rpc_test);
+
+
+			// experiments with serialization
+
+			//List<ChunkInfo> test_list = ByteArrayToChunkInfos( intermediate );
+
+			//print ("Just converted, before was: "+_infos.Count + ", now is " +test_list.Count );
+
+			//print ( "admin should have just called syncChunks, should now print 42, not 3");
+			this.request = false;
+		}
+
+       
+    }
+	
+    void OnApplicationQuit()
+    {
+        _running = false;
+    }
+
+    public static byte getPotentialBlock(Vector3 pos)
+    {
+        return getPotentialBlock(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
+    }
+
+    public static byte getPotentialBlock(int x, int y, int z)
+    {
+        if (y == 0) return 1;
+        float noise1 = Noise.getNoiseValue(new Vector3(x, y, z) / 16f);
+        float noise2 = Noise.getNoiseValue(new Vector3(x, y, z) / 37f);
+        float noise4 = Noise.getNoiseValue(new Vector3(x, y, z) / 4f);
+        noise1 += noise2*25 + noise4;
+        noise1 /= 27;
+        noise1 /= (y + 1);
+        if (noise1 > .04f)
+        {
+            return 1;
+        }
+        if (noise2 < .2) return 2;
+        return 0;
+    }
+
+    public byte getActualBlock(Vector3 pos)
+    {
+        return getActualBlock(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y), Mathf.FloorToInt(pos.z));
+    }
+
+    public byte getActualBlock(int x, int y, int z)
+    {
+        return 0;
+    }
+
+    private void generateChunks()
+    {
+        while (_running)
+        {
+            ChunkInfo toGenerate;
+            lock (_needsGenerated)
+            {
+                if (_needsGenerated.Count == 0) continue;
+                toGenerate = _needsGenerated.Dequeue();
+            }
+            toGenerate.generate();
+            lock(_needsMesh)
+            {
+                _needsMesh.Enqueue(toGenerate);
+            }
+        }
+    }
+    
+	public List<ChunkInfo> getChunkInfos()
+	{
+		return _infos;
+	}
+
+	public void setChunkInfos(List<ChunkInfo> input)
+	{
+		_infos = input;
+		foreach ( ChunkInfo info in input )
+		lock(_needsGenerated)
+		{
+			_needsMesh.Enqueue(info);
+		}
+	}
+
+	[PunRPC]
+    public void putBlock(int x, int y, int z, byte type)
+    {
+        int chunkX = Mathf.FloorToInt((float)x / Constants.chunkWidth);
+        int chunkZ = Mathf.FloorToInt((float)z / Constants.chunkWidth);
+        Chunk chunk = _chunks[chunkX][chunkZ];
+        //How many debug.logs does it take to realize that integer division is a thing that truncates toward 0?
+        //Debug.Log(x / Constants.chunkWidth);
+        //Debug.Log(Mathf.FloorToInt(-9.5f));
+        //Debug.Log(Mathf.FloorToInt(x / Constants.chunkWidth));
+        //Debug.Log("Set Block: " + x + ", " + y + ", " + z + " to Type: " + type);
+        //Debug.Log("On chunk: " + chunkX + ", " + chunkZ);
+        chunk.getInfo().map[(int)Mathf.Repeat(x, Constants.chunkWidth), y, (int)Mathf.Repeat(z, Constants.chunkWidth)] = type;
+        chunk.generateMesh();
+
+    }
+}
