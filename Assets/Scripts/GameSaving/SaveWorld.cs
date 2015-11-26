@@ -60,7 +60,7 @@ public class SaveWorld : MonoBehaviour
 			player.transform.position = player_position;
 
 			// Clear and set World info
-			my_world.clearChunkInfos ();
+			//my_world.clearChunkInfos ();
 			my_world.setChunkInfos (infos);
 
 			print ("Loading complete");

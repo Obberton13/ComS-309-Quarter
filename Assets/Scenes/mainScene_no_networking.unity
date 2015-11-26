@@ -580,7 +580,7 @@ MonoBehaviour:
   speed: 6
   jumpForce: 8
   gravity: 20
-  rotateSpeed: 45
+  rotateSpeed: 90
   basicBlock: {fileID: 158208, guid: 9f0fdbbf36458e1458133e399b3b24bd, type: 2}
   crosshairTexture: {fileID: 2800000, guid: 5e531ccf40e38334b9c8984348606479, type: 3}
   ms: {fileID: 0}
@@ -722,7 +722,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9678dc0f98d644323a00c8489f34d2be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _world: {fileID: 1276622456}
+  _world: {fileID: 0}
 --- !u!4 &639516779
 Transform:
   m_ObjectHideFlags: 0
@@ -1251,7 +1251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3caea64fa2bb844e8dcf7c615ddf4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  menuState: 0
+  menuState: 1
 --- !u!1 &1286546151
 GameObject:
   m_ObjectHideFlags: 0

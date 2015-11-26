@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -57,20 +57,19 @@ public class World : MonoBehaviour {
 			}
             info = _needsMesh.Dequeue();
         }
-        GameObject obj = (GameObject)GameObject.Instantiate(_prefab, info.getPos(), Quaternion.identity);
+        //GameObject obj = (GameObject) Instantiate(_prefab, info.getPos(), Quaternion.identity);
+		GameObject obj = PhotonNetwork.Instantiate("Chunk", info.getPos(), Quaternion.identity, 0);
         Chunk chunk = ((Chunk)obj.GetComponent<Chunk>());
         chunk.setInfo(info);
         chunk.generateMesh();
-
-		// Add generated chunks to lookup-table, _chunks
-		Dictionary<int, Chunk> inner = null;
-		int x = (int)chunk.getInfo ().getPos ().x;
-		int z = (int)chunk.getInfo ().getPos ().z;
-		if (!_chunks.TryGetValue (x, out inner)) {
-			inner = new Dictionary<int, Chunk>();
-			_chunks.Add (x, inner );
-		}
-		inner.Add (z, chunk);
+        Vector3 pos = info.getPos();
+        int x = Mathf.FloorToInt(pos.x / Constants.chunkWidth);
+        int z = Mathf.FloorToInt(pos.z / Constants.chunkWidth);
+        if(!_chunks.ContainsKey(x))
+        {
+            _chunks.Add(x, new Dictionary<int, Chunk>());
+        }
+        _chunks[x].Add(z, chunk);
     }
 
     void OnApplicationQuit()
@@ -154,17 +153,19 @@ public class World : MonoBehaviour {
 		}
 	}
 
-	/* Clear all world-generation data */
-	public void clearChunkInfos()
-	{
-		foreach (KeyValuePair<int, Dictionary<int, Chunk>> Dict in _chunks)
-		{
-			foreach (KeyValuePair<int, Chunk> entry in Dict.Value) 
-			{
-				entry.Value.destroy ();
-			}
-			Dict.Value.Clear();
-		}
-		_infos.Clear ();
-	}
+    public void putBlock(int x, int y, int z, byte type)
+    {
+        int chunkX = Mathf.FloorToInt((float)x / Constants.chunkWidth);
+        int chunkZ = Mathf.FloorToInt((float)z / Constants.chunkWidth);
+        Chunk chunk = _chunks[chunkX][chunkZ];
+        //How many debug.logs does it take to realize that integer division is a thing that truncates toward 0?
+        //Debug.Log(x / Constants.chunkWidth);
+        //Debug.Log(Mathf.FloorToInt(-9.5f));
+        //Debug.Log(Mathf.FloorToInt(x / Constants.chunkWidth));
+        //Debug.Log("Set Block: " + x + ", " + y + ", " + z + " to Type: " + type);
+        //Debug.Log("On chunk: " + chunkX + ", " + chunkZ);
+        chunk.getInfo().map[(int)Mathf.Repeat(x, Constants.chunkWidth), y, (int)Mathf.Repeat(z, Constants.chunkWidth)] = type;
+        chunk.generateMesh();
+
+    }
 }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class PlayerControlScript : MonoBehaviour {
@@ -13,10 +13,12 @@ public class PlayerControlScript : MonoBehaviour {
 	private float gravity = 20.0F;
 
 	[SerializeField]
-	private float rotateSpeed = 45.0F;
+	private float rotateSpeed = 90.0F;
 
 	[SerializeField]
 	private GameObject basicBlock;
+    
+    private World _world;
 
 	private CharacterController CharControl;
 	private Vector3 moveDir;
@@ -43,6 +45,7 @@ public class PlayerControlScript : MonoBehaviour {
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
 		ms = GameObject.Find ("_Manager").GetComponent<MenuState>();
+        _world = GameObject.Find("_Manager").GetComponent<World>(); 
 	}
 	
 	// Update is called once per frame
@@ -67,12 +70,13 @@ public class PlayerControlScript : MonoBehaviour {
 			//Rotate the player
 			transform.Rotate (Vector3.up * Time.deltaTime * Input.GetAxis ("XboxRJoyHoriz") * rotateSpeed);
 
-			//Attempt to place an item
-			if (Input.GetButtonDown ("XboxRBumper")) {
-			
-				if (Physics.Raycast (transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-					//print (crosshairHit.point);
+		//Attempt to place an item
+		if (Input.GetButtonDown("XboxRBumper")) {
+		
+			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+                //print (crosshairHit.point);
 
+                //Debug.Log(crosshairHit.point);
 
 
 					float tempX = crosshairHit.point.x + crosshairHit.normal.x;
@@ -101,25 +105,28 @@ public class PlayerControlScript : MonoBehaviour {
 					//checks if the space is open to place a block. 
 					if (!Physics.CheckSphere (newLocation, CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
 						//TODO remove from inventory! 
-						Instantiate (basicBlock, newLocation, Quaternion.identity);
+						//Instantiate (basicBlock, newLocation, Quaternion.identity);
+
 					}
 				}
 
 			}
-
-			if (Input.GetButtonDown ("XboxLBumper")) {
-				if (Physics.Raycast (transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-
-					//TODO add to inventory!
-					Destroy (crosshairHit.transform.gameObject);
-				}
-			}
+		if (Input.GetButtonDown("XboxLBumper")) {
+			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+                if (!crosshairHit.transform.GetComponent<MeshCollider>())
+                {
+				    Destroy(crosshairHit.transform.gameObject);
+                }
+                //TODO remove things from the map.
+                //TODO add to inventory!
+            }
 		}
 	}
-
-	void OnGUI()
-	{
-		//Draw the crosshair at the center of the screen.
-		GUI.DrawTexture(new Rect((Screen.width-crosshairTexture.width*crosshairScale)/2 ,(Screen.height-crosshairTexture.height*crosshairScale)/2, crosshairTexture.width*crosshairScale, crosshairTexture.height*crosshairScale),crosshairTexture);
 	}
+
+    void OnGUI()
+    {
+        //Draw the crosshair at the center of the screen.
+        GUI.DrawTexture(new Rect((Screen.width - crosshairTexture.width * crosshairScale) / 2, (Screen.height - crosshairTexture.height * crosshairScale) / 2, crosshairTexture.width * crosshairScale, crosshairTexture.height * crosshairScale), crosshairTexture);
+    }
 }
