@@ -1182,7 +1182,7 @@ GameObject:
   - 114: {fileID: 1276622460}
   - 114: {fileID: 1276622461}
   m_Layer: 0
-  m_Name: _Manager
+  m_Name: Game Controller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

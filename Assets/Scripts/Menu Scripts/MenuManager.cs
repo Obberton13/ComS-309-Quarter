@@ -24,7 +24,7 @@ public class MenuManager : MonoBehaviour {
         oldVal = selected;
 		highlightSelected (selected);
         mousedOver = false;
-		ms = GameObject.Find ("_Manager").GetComponent<MenuState>();
+		ms = GameObject.Find ("Game Controller").GetComponent<MenuState>();
 	}
 	
 	void Update () {
@@ -78,7 +78,7 @@ public class MenuManager : MonoBehaviour {
 
 		switch (selection) {
 		case 0:
-			GameObject world = GameObject.Find ("_Manager");
+			GameObject world = GameObject.Find ("Game Controller");
 			if (!world.GetComponent<World>()._isGenerating)
 			{
 				ms.menuState = MenuState.MenuStates.playerPlaying;

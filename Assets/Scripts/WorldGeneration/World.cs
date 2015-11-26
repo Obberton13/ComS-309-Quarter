@@ -32,9 +32,9 @@ public class World : MonoBehaviour {
     void Start()
     {
 		GameObject.Find ("Game Controller").GetComponent<MenuState>().menuState = MenuState.MenuStates.inMainMenu;
-        for (int x = -2; x < 3; x++)
+        for (int x = -10; x < 10; x++)
         {
-            for (int z = -2; z < 3; z++)
+            for (int z = -10; z < 10; z++)
             {
                 ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
                 lock(_needsGenerated)
@@ -58,7 +58,7 @@ public class World : MonoBehaviour {
             info = _needsMesh.Dequeue();
         }
         //GameObject obj = (GameObject) Instantiate(_prefab, info.getPos(), Quaternion.identity);
-		GameObject obj = PhotonNetwork.Instantiate("Chunk", info.getPos(), Quaternion.identity, 0);
+		GameObject obj = (GameObject)PhotonNetwork.Instantiate("Chunk", info.getPos(), Quaternion.identity, 0);
         Chunk chunk = ((Chunk)obj.GetComponent<Chunk>());
         chunk.setInfo(info);
         chunk.generateMesh();
