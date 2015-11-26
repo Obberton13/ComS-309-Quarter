@@ -1,0 +1,3 @@
+[submodule "quartergame.net"]
+	path = quartergame.net
+	url = git://github.com/luehm/quartergame.net.git
