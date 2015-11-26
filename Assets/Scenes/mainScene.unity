@@ -65,6 +65,7 @@ LightmapSettings:
     m_TextureCompression: 1
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
+    m_ReflectionCompression: 2
   m_LightmapSnapshot: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &4
@@ -84,9 +85,6 @@ NavMeshSettings:
     cellSize: .166666672
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
---- !u!127 &5
-LevelGameManager:
-  m_ObjectHideFlags: 0
 --- !u!1 &545462760
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,6 +156,7 @@ GameObject:
   - 114: {fileID: 1896391415}
   - 114: {fileID: 1896391417}
   - 114: {fileID: 1896391418}
+  - 114: {fileID: 1896391419}
   m_Layer: 0
   m_Name: Game Controller
   m_TagString: Untagged
@@ -177,6 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _prefab: {fileID: 128304, guid: 7a3c751c86fb2ff44976055f814094ff, type: 2}
+  _isGenerating: 0
 --- !u!4 &1896391416
 Transform:
   m_ObjectHideFlags: 0
@@ -211,3 +211,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a769119315cbea49849b7411d68ffbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1896391419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1896391414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3caea64fa2bb844e8dcf7c615ddf4ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  menuState: 1

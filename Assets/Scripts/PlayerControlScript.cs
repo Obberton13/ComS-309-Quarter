@@ -44,8 +44,8 @@ public class PlayerControlScript : MonoBehaviour {
 		PlayerCamera = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").gameObject;
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
-		ms = GameObject.Find ("_Manager").GetComponent<MenuState>();
-        _world = GameObject.Find("_Manager").GetComponent<World>(); 
+		ms = GameObject.Find ("Game Controller").GetComponent<MenuState>();
+        _world = GameObject.Find("Game Controller").GetComponent<World>(); 
 	}
 	
 	// Update is called once per frame

@@ -31,7 +31,7 @@ public class World : MonoBehaviour {
 
     void Start()
     {
-		GameObject.Find ("_Manager").GetComponent<MenuState>().menuState = MenuState.MenuStates.inMainMenu;
+		GameObject.Find ("Game Controller").GetComponent<MenuState>().menuState = MenuState.MenuStates.inMainMenu;
         for (int x = -2; x < 3; x++)
         {
             for (int z = -2; z < 3; z++)
