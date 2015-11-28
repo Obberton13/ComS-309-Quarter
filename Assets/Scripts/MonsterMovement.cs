@@ -10,7 +10,7 @@ public class MonsterMovement : MonoBehaviour {
 	private float canHit; //if canHit >= MONSTER_ATTACK_SPEED, the monster can attack.
 	
 	[SerializeField]
-	private float jumpForce = 3.0F;
+	private float jumpForce = 6.0F;
 	
 	[SerializeField]
 	private float gravity = 20.0F;
@@ -32,21 +32,28 @@ public class MonsterMovement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {  
-		
+
+
+
+
 		GameObject target = findClosestPlayer();
-		
-		
+
 		//monster is out of attack range and needs to move closer somehow
+		//print((target.transform.position - this.transform.position).sqrMagnitude);
 		if ((target.transform.position - this.transform.position).sqrMagnitude >= MONSTER_ATTACK_RANGE * MONSTER_ATTACK_RANGE) {
 			
-			//keep eye contact to know that you mean business.
-			transform.rotation = Quaternion.LookRotation(target.transform.position, Vector3.up);
+
 			
 			//move forward by default
 			if (controller.isGrounded) {
 				moveDirection = (target.transform.position - this.transform.position).normalized; //move towards them. You know you want to.
 				moveDirection.y = 0;
 				moveDirection *= MONSTER_MOVE_SPEED;
+
+				//keep eye contact to know that you mean business.
+				//moved to ground because else we get weird things?
+				transform.LookAt(target.transform.position);
+				//transform.rotation = Quaternion.LookRotation(target.transform.position, this.transform.up);
 			}
 			
 
@@ -68,6 +75,7 @@ public class MonsterMovement : MonoBehaviour {
 							{
 								if (canHit >= MONSTER_ATTACK_SPEED) {
 									attackBlock(monsterHit.transform.gameObject);
+									print("OUCH3");
 									canHit = 0;
 								}
 							}
@@ -84,6 +92,7 @@ public class MonsterMovement : MonoBehaviour {
 							{
 								if (canHit >= MONSTER_ATTACK_SPEED) {
 									attackBlock(monsterHit.transform.gameObject);
+									print("OUCH2");
 									canHit = 0;
 								}
 							}
@@ -106,6 +115,7 @@ public class MonsterMovement : MonoBehaviour {
 							{
 								if (canHit >= MONSTER_ATTACK_SPEED) {
 									attackBlock(monsterHit.transform.gameObject);
+									print("OUCH4");
 									canHit = 0;
 								}
 							}
@@ -114,7 +124,10 @@ public class MonsterMovement : MonoBehaviour {
 
 					else {
 						print("1");
-						moveDirection.y = jumpForce;
+						//we don't want to inifinite jump
+						if (controller.isGrounded) {
+							moveDirection.y = jumpForce;
+						}	
 					}
 				}
 				//There's only a block in our way at our feet, so let's jump over it. 
@@ -135,6 +148,7 @@ public class MonsterMovement : MonoBehaviour {
 						{
 							if (canHit >= MONSTER_ATTACK_SPEED) {
 								attackBlock(monsterHit.transform.gameObject);
+								print("OUCH6");
 								canHit = 0;
 							}
 						}
@@ -147,6 +161,7 @@ public class MonsterMovement : MonoBehaviour {
 						if (!monsterHit.transform.GetComponent<MeshCollider>())	{
 							if (canHit >= MONSTER_ATTACK_SPEED) {
 								attackBlock(monsterHit.transform.gameObject);
+								print("OUCH5");
 								canHit = 0;
 							}
 						}
@@ -178,10 +193,11 @@ public class MonsterMovement : MonoBehaviour {
 		
 		//monster is in range and will try to attack!
 		else {
-			
+
+			//print("GONNA GETCHA");
 			if (canHit >= MONSTER_ATTACK_SPEED) {
 				
-				print ("OUCH");
+				print("OUCH");
 				canHit = 0;
 			}
 
@@ -194,7 +210,14 @@ public class MonsterMovement : MonoBehaviour {
 
 		//cooldown until can attack again
 		canHit += Time.deltaTime; 
-		
+
+
+		//TODO in case the monster falls of the stage.
+		//if (transform.position.y < -100) {
+		//	Destroy(this.gameObject);
+		//}
+
+
 	} //end of Update()
 	
 	
@@ -236,5 +259,9 @@ public class MonsterMovement : MonoBehaviour {
 		Gizmos.DrawSphere(this.transform.position - new Vector3(0, .5F, 0) + 1.01F * transform.forward.normalized, 0.49F); //bottom block in front
 		Gizmos.DrawSphere(this.transform.position + new Vector3(0, .5F, 0) + 1.01F * transform.forward.normalized, 0.49F); //bottom block in front
 		Gizmos.DrawSphere(this.transform.position + new Vector3(0, 1.5F, 0) + 1.01F * transform.forward.normalized, 0.49F); //bottom block in front
+	}
+
+	void OnGUI() {
+		GUI.Label(new Rect(10, 10, 100, 20), "canHit: " + canHit);
 	}
 }
