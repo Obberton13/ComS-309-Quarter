@@ -28,10 +28,11 @@ public class RoomSetup : MonoBehaviour {
 	{
 
 		//only the first player in the room needs to generate a world
-		if (PhotonNetwork.playerList.Length == 1)
-		{
-			GameObject.Find("Game Controller").GetComponent<World>().enabled = true;
-		}
+		//JK NEVERMIND
+		//if (PhotonNetwork.playerList.Length == 1)
+		//{
+		//	GameObject.Find("Game Controller").GetComponent<World>().enabled = true;
+		//}
 
 		//incase we wanna do stuff with the player. We do. See below.
 		//TODO change spawn point vector3.
