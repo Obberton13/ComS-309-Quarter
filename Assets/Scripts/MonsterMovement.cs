@@ -53,7 +53,6 @@ public class MonsterMovement : MonoBehaviour {
 				//keep eye contact to know that you mean business.
 				//moved to ground because else we get weird things?
 				transform.LookAt(target.transform.position);
-				//transform.rotation = Quaternion.LookRotation(target.transform.position, this.transform.up);
 			}
 			
 
@@ -130,10 +129,6 @@ public class MonsterMovement : MonoBehaviour {
 						}	
 					}
 				}
-				//There's only a block in our way at our feet, so let's jump over it. 
-				//moveDirection.y = jumpForce;
-				
-				//TODO use Physics.checkCapsule to see if we can fit into the area, if not we need to start breaking blocks.
 				
 			}
 
@@ -168,22 +163,6 @@ public class MonsterMovement : MonoBehaviour {
 					}
 				}
 			}
-
-//			//block above head level, must kill because tight fit
-//			else if (Physics.CheckSphere((this.transform.position + new Vector3(0, 1.5F, 0)) + 1.01F * transform.forward.normalized, 0.49F)) {
-//				//case 5
-//				print("5");
-//				if (Physics.Raycast(transform.position + new Vector3(0, 1.5F, 0), transform.forward, out monsterHit, 1.01F)) {
-//					if (!monsterHit.transform.GetComponent<MeshCollider>())	{
-//						if (canHit >= MONSTER_ATTACK_SPEED) {
-//							attackBlock(monsterHit.transform.gameObject);
-//							canHit = 0;
-//						}
-//					}
-//				}
-//			}
-
-			
 
 			moveDirection.y -= gravity * Time.deltaTime; //even monsters get gravity.
 			controller.Move(moveDirection * Time.deltaTime); //begin the march.
@@ -243,13 +222,15 @@ public class MonsterMovement : MonoBehaviour {
 
 	private void attackBlock(GameObject block) {
 
-		//99% chance to destroy right now
-		//TODO change chance based off of block info.
-		if (Random.Range(0.0F, 1.0F) <= .99F) {
-			Destroy(block); //TODO
-			//Remove from Chunk
-		}
-
+		//TODO make it so monsters can only destroy blocks
+		//if (block.tag.Equals("Block")) {
+			//99% chance to destroy right now
+			//TODO change chance based off of block info.
+			if (Random.Range(0.0F, 1.0F) <= .99F) {
+				Destroy(block); //TODO
+				//Remove from Chunk
+			}
+		//}
 
 	}
 
@@ -261,7 +242,8 @@ public class MonsterMovement : MonoBehaviour {
 		Gizmos.DrawSphere(this.transform.position + new Vector3(0, 1.5F, 0) + 1.01F * transform.forward.normalized, 0.49F); //bottom block in front
 	}
 
+	//Testing for monster attack speed
 	void OnGUI() {
-		GUI.Label(new Rect(10, 10, 100, 20), "canHit: " + canHit);
+		//GUI.Label(new Rect(10, 10, 100, 20), "canHit: " + canHit);
 	}
 }
