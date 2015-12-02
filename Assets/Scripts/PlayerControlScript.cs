@@ -51,6 +51,7 @@ public class PlayerControlScript : Photon.PunBehaviour {
 		World world;
 		world = GameObject.Find("Game Controller").GetComponent<World>(); 
 		world.putBlock( x, y, z, type );
+
 	}
 
 	
@@ -112,11 +113,8 @@ public class PlayerControlScript : Photon.PunBehaviour {
 					//checks if the space is open to place a block. 
 					if (!Physics.CheckSphere (newLocation, CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
 						//TODO remove from inventory! 
-						//photonView.RPC ("Instantiate", PhotonTargets.All, basicBlock, newLocation, Quaternion.identity);
-						photonView.RPC("place_block_rpc", PhotonTargets.All, (int)tempX, (int)tempY, (int)tempZ, (byte)1 );
-						//photonView.RPC("place_block_rpc", PhotonTargets.All );
-						//_world.putBlock( (int)crosshairHit.transform.position.x, (int)crosshairHit.transform.position.y, (int)crosshairHit.transform.position.z, 1 );
-						print ("Place!");
+						print ( newLocation );
+						photonView.RPC("place_block_rpc", PhotonTargets.All, Mathf.FloorToInt (tempX), Mathf.FloorToInt( tempY ), Mathf.FloorToInt( tempZ ), (byte)1 );
 					}
 				}
 
@@ -128,8 +126,13 @@ public class PlayerControlScript : Photon.PunBehaviour {
 				    //Destroy(crosshairHit.transform.gameObject);
 						//photonView.RPC("putBlockHelper", PhotonTargets.All, crosshairHit.transform.position.x, crosshairHit.transform.position.y, crosshairHit.transform.position.z, 0 );
 						//_world.putBlock( (int)crosshairHit.transform.position.x, (int)crosshairHit.transform.position.y, (int)crosshairHit.transform.position.z, 0 );
-						photonView.RPC("place_block_rpc", PhotonTargets.All, (int)crosshairHit.transform.position.x, (int)crosshairHit.transform.position.y, (int)crosshairHit.transform.position.z, (byte)0 );
-						print ("DESTROY");
+
+						int tempX = Mathf.FloorToInt(crosshairHit.point.x - crosshairHit.normal.x / 2f);
+						int tempY = Mathf.FloorToInt(crosshairHit.point.y - crosshairHit.normal.y / 2f);
+						int tempZ = Mathf.FloorToInt(crosshairHit.point.z - crosshairHit.normal.z / 2f);
+
+						photonView.RPC("place_block_rpc", PhotonTargets.All, tempX, tempY, tempZ, (byte)0 );
+						print ( "Destroy!" );
 					}
                 //TODO remove things from the map.
                 //TODO add to inventory!
