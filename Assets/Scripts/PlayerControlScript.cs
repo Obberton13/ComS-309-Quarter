@@ -2,13 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class PlayerControlScript : Photon.PunBehaviour {
-
-	[PunRPC]
-	void place_block_rpc(int x, int y, int z, byte type)
-	{
-		_world.putBlock( x, y, z, type );
-	}
-
+	
 	[SerializeField]
 	private float speed = 6.0F;
 
@@ -23,8 +17,6 @@ public class PlayerControlScript : Photon.PunBehaviour {
 
 	[SerializeField]
 	private GameObject basicBlock;
-    
-    private World _world;
 
 	private CharacterController CharControl;
 	private Vector3 moveDir;
@@ -51,8 +43,16 @@ public class PlayerControlScript : Photon.PunBehaviour {
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
 		ms = GameObject.Find ("Game Controller").GetComponent<MenuState>();
-        _world = GameObject.Find("Game Controller").GetComponent<World>(); 
 	}
+
+	[PunRPC]
+	void place_block_rpc(int x, int y, int z, byte type)
+	{
+		World world;
+		world = GameObject.Find("Game Controller").GetComponent<World>(); 
+		world.putBlock( x, y, z, type );
+	}
+
 	
 	// Update is called once per frame
 	void Update () {
