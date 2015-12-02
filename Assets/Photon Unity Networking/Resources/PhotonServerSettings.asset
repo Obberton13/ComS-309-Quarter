@@ -35,4 +35,7 @@ MonoBehaviour:
   - PunRespawn
   - RequestForPickupTimes
   - TaggedPlayer
+  - putBlock
+  - test_print
+  - place_block_rpc
   DisableAutoOpenWizard: 1

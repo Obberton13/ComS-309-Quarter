@@ -1,7 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
-public class PlayerControlScript : MonoBehaviour {
+public class PlayerControlScript : Photon.PunBehaviour {
+
+	[PunRPC]
+	void place_block_rpc(int x, int y, int z, byte type)
+	{
+		_world.putBlock( x, y, z, type );
+	}
 
 	[SerializeField]
 	private float speed = 6.0F;
@@ -106,18 +112,25 @@ public class PlayerControlScript : MonoBehaviour {
 					//checks if the space is open to place a block. 
 					if (!Physics.CheckSphere (newLocation, CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
 						//TODO remove from inventory! 
-						//Instantiate (basicBlock, newLocation, Quaternion.identity);
-
+						//photonView.RPC ("Instantiate", PhotonTargets.All, basicBlock, newLocation, Quaternion.identity);
+						photonView.RPC("place_block_rpc", PhotonTargets.All, (int)tempX, (int)tempY, (int)tempZ, (byte)1 );
+						//photonView.RPC("place_block_rpc", PhotonTargets.All );
+						//_world.putBlock( (int)crosshairHit.transform.position.x, (int)crosshairHit.transform.position.y, (int)crosshairHit.transform.position.z, 1 );
+						print ("Place!");
 					}
 				}
 
 			}
 		if (Input.GetButtonDown("XboxLBumper")) {
 			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-                if (!crosshairHit.transform.GetComponent<MeshCollider>())
+                if (crosshairHit.transform.GetComponent<MeshCollider>())
                 {
-				    Destroy(crosshairHit.transform.gameObject);
-                }
+				    //Destroy(crosshairHit.transform.gameObject);
+						//photonView.RPC("putBlockHelper", PhotonTargets.All, crosshairHit.transform.position.x, crosshairHit.transform.position.y, crosshairHit.transform.position.z, 0 );
+						//_world.putBlock( (int)crosshairHit.transform.position.x, (int)crosshairHit.transform.position.y, (int)crosshairHit.transform.position.z, 0 );
+						photonView.RPC("place_block_rpc", PhotonTargets.All, (int)crosshairHit.transform.position.x, (int)crosshairHit.transform.position.y, (int)crosshairHit.transform.position.z, (byte)0 );
+						print ("DESTROY");
+					}
                 //TODO remove things from the map.
                 //TODO add to inventory!
             }

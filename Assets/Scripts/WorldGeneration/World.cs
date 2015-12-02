@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class World : MonoBehaviour {
+public class World : Photon.PunBehaviour {
 
 	int chunk_count = 0;
 
@@ -152,7 +152,7 @@ public class World : MonoBehaviour {
 			_needsMesh.Enqueue(info);
 		}
 	}
-
+	
     public void putBlock(int x, int y, int z, byte type)
     {
         int chunkX = Mathf.FloorToInt((float)x / Constants.chunkWidth);
