@@ -1,23 +1,18 @@
 fileFormatVersion: 2
-guid: 50e49398ae6a71246b696fbc151d11f7
+guid: 436eed951e9dc944c80778e90318b3f8
+labels:
+- sword
+- long
 ModelImporter:
   serializedVersion: 18
   fileIDToRecycleName:
-    100000: Quad
-    100002: //RootNode
-    400000: Quad
-    400002: //RootNode
-    2300000: Quad
-    3300000: Quad
-    4300000: Quad
-    6400000: Quad
-    11100000: //RootNode
+    4300000: Cylinder
   materials:
-    importMaterials: 0
-    materialName: 0
+    importMaterials: 1
+    materialName: 3
     materialSearch: 1
   animations:
-    legacyGenerateAnimations: 0
+    legacyGenerateAnimations: 4
     bakeSimulation: 0
     optimizeGameObjects: 0
     motionNodeName: 
@@ -35,9 +30,9 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: .00999999978
     meshCompression: 0
-    addColliders: 1
+    addColliders: 0
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
