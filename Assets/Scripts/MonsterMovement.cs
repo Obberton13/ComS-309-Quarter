@@ -68,7 +68,7 @@ public class MonsterMovement : MonoBehaviour {
 					if (Physics.CheckSphere((this.transform.position + new Vector3(0, 1.5F, 0)) + 1.01F * transform.forward.normalized, 0.49F)) {
 						//case 3
 						//delete cube above head this.transform.position + new Vector3(0, 1F, 0)) + 1.01F * transform.forward.normalized)
-						print("3");
+						//print("3");
 						if (Physics.Raycast(transform.position + new Vector3(0, 1.5F, 0), transform.forward, out monsterHit, 1.01F)) {
 							if (!monsterHit.transform.GetComponent<MeshCollider>())
 							{
@@ -85,7 +85,7 @@ public class MonsterMovement : MonoBehaviour {
 					else {
 						//case 2 on your cheat sheet ryan
 						//break the cube at the head (this.transform.position + new Vector3(0, .5F, 0)) + 1.01F * transform.forward.normalized)
-						print("2");
+						//print("2");
 						if (Physics.Raycast(transform.position + new Vector3(0, 0.5F, 0), transform.forward, out monsterHit, 1.01F)) {
 							if (!monsterHit.transform.GetComponent<MeshCollider>())
 							{
@@ -108,7 +108,7 @@ public class MonsterMovement : MonoBehaviour {
 					if (Physics.CheckSphere((this.transform.position + new Vector3(0, 1.5F, 0)) + 1.01F * transform.forward.normalized, 0.49F)) {
 						//case 4 ryan
 						// break the block at (this.transform.position + new Vector3(0, 1F, 0)) + 1.01F * transform.forward.normalized)
-						print("4");
+						//print("4");
 						if (Physics.Raycast(transform.position + new Vector3(0, 1.5F, 0), transform.forward, out monsterHit, 1.01F)) {
 							if (!monsterHit.transform.GetComponent<MeshCollider>())
 							{
@@ -122,7 +122,7 @@ public class MonsterMovement : MonoBehaviour {
 					}
 
 					else {
-						print("1");
+						//print("1");
 						//we don't want to inifinite jump
 						if (controller.isGrounded) {
 							moveDirection.y = jumpForce;
@@ -137,7 +137,7 @@ public class MonsterMovement : MonoBehaviour {
 				if (Physics.CheckSphere((this.transform.position + new Vector3(0, 1.5F, 0)) + 1.01F * transform.forward.normalized, 0.49F)) {
 					//case 6
 					//(this.transform.position + new Vector3(0, .5F, 0)) + 1.01F * transform.forward.normalized)
-					print("6");
+					//print("6");
 					if (Physics.Raycast(transform.position + new Vector3(0, 1.5F, 0), transform.forward, out monsterHit, 1.01F)) {
 						if (!monsterHit.transform.GetComponent<MeshCollider>())
 						{
@@ -151,7 +151,7 @@ public class MonsterMovement : MonoBehaviour {
 				}
 				else {
 					//case 5
-					print("5");
+					//print("5");
 					if (Physics.Raycast(transform.position + new Vector3(0, 1.5F, 0), transform.forward, out monsterHit, 1.01F)) {
 						if (!monsterHit.transform.GetComponent<MeshCollider>())	{
 							if (canHit >= MONSTER_ATTACK_SPEED) {
