@@ -34,7 +34,6 @@ public class MonsterSpawner : MonoBehaviour {
 
 
 		GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
-
 		//spawn a monster around each player
 		foreach(GameObject player in allPlayers) {
 
@@ -45,7 +44,7 @@ public class MonsterSpawner : MonoBehaviour {
 
 				Vector3 spawnPos = new Vector3(player.transform.position.x + randPos.x, player.transform.position.y + randPos.y, player.transform.position.z + randPos.z);
 
-				GameObject newMon = (GameObject) Instantiate(monsterPref, spawnPos, Quaternion.Euler(0, 0, 0));
+				GameObject newMon = PhotonNetwork.Instantiate("realMonsterPrefab", spawnPos, Quaternion.Euler(0, 0, 0), 0);
 				monstersLeft++;
 				//place monster on the ground after spawning
 				if (Physics.Raycast(newMon.transform.position, Vector3.down, out groundHit, Mathf.Infinity)) {
