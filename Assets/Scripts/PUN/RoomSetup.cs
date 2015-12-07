@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class RoomSetup : MonoBehaviour {
-	
+
 	// Use this for initialization
 	void Start () {
 		PhotonNetwork.ConnectUsingSettings("0.1");
