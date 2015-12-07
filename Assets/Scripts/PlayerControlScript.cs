@@ -50,6 +50,7 @@ public class PlayerControlScript : MonoBehaviour {
 		moveDir = Vector3.zero;
 		ms = GameObject.Find ("Game Controller").GetComponent<MenuState>();
         _world = GameObject.Find("Game Controller").GetComponent<World>(); 
+		PlayerSword = transform.Find("OVRCameraRig").Find("Sword").gameObject;
 	}
 	
 	// Update is called once per frame
@@ -129,7 +130,6 @@ public class PlayerControlScript : MonoBehaviour {
 	
 		if (Input.GetButtonDown("XboxB") || Input.GetKeyDown(KeyCode.U)) {
 				//Do the sword animation
-				PlayerSword = transform.Find("OVRCameraRig").Find("Sword").gameObject;
 				if(PlayerSword.GetComponent<SwingSword>().attack()) {
 					canKill = true;
 				}
@@ -140,17 +140,17 @@ public class PlayerControlScript : MonoBehaviour {
 			//we can check if there is a monster that was just killed. Only kills one at a time. 
 			if (canKill) {
 				//if the monster is directly in front of the player
-				if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+				if (Physics.Raycast(transform.position, transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
 					Destroy(crosshairHit.transform.gameObject);
 					canKill = false;
 				}
 				//if the monster is just a little bit to the right?
-				else if (Physics.Raycast(transform.position + 0.75F*PlayerCamera.transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+				else if (Physics.Raycast(transform.position + 0.75F*transform.right, transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
 					Destroy(crosshairHit.transform.gameObject);
 					canKill = false;
 				}
 				//if the monster is just a little bit to the left?
-				else if (Physics.Raycast(transform.position - 0.75F*PlayerCamera.transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+				else if (Physics.Raycast(transform.position - 0.75F*transform.right, transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
 					//if crosshairHit.tag == "monster" 
 					Destroy(crosshairHit.transform.gameObject);
 					canKill = false;

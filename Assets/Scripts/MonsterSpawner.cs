@@ -23,7 +23,7 @@ public class MonsterSpawner : MonoBehaviour {
 	void Update () {
 	
 		//TODO put this in game Controller or something
-		if (Input.GetKeyDown(KeyCode.P)) {
+		if (Input.GetKeyDown(KeyCode.P) || Input.GetButtonDown("XboxY")) {
 			Spawn();
 		}
 
