@@ -19,7 +19,7 @@ public class World : MonoBehaviour {
 
     void Awake()
     {
-        //Random.seed = 1;
+        Random.seed = 1;
         Noise.init();
         _needsGenerated = new Queue<ChunkInfo>();
         _needsMesh = new Queue<ChunkInfo>();
@@ -57,8 +57,8 @@ public class World : MonoBehaviour {
 			}
             info = _needsMesh.Dequeue();
         }
-        //GameObject obj = (GameObject) Instantiate(_prefab, info.getPos(), Quaternion.identity);
-		GameObject obj = (GameObject)PhotonNetwork.Instantiate("Chunk", info.getPos(), Quaternion.identity, 0);
+        GameObject obj = (GameObject) Instantiate(_prefab, info.getPos(), Quaternion.identity);
+		//GameObject obj = (GameObject)PhotonNetwork.Instantiate("Chunk", info.getPos(), Quaternion.identity, 0);
         Chunk chunk = ((Chunk)obj.GetComponent<Chunk>());
         chunk.setInfo(info);
         chunk.generateMesh();
