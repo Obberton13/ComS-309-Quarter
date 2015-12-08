@@ -6,7 +6,7 @@ public class SwingSword : MonoBehaviour {
 	private float startXAngle = 90.0F;
 	private float endXAngle = 50.0F;
 
-	private float startXPos = 0.42F;
+	private float startXPos = 0.18F;
 	private float endXPos = 0F;
 
 	private bool startSwing = false;
@@ -37,7 +37,7 @@ public class SwingSword : MonoBehaviour {
 			float pos = Mathf.Lerp(startXPos, endXPos, startTime / SWING_TIME);
 			startTime+=Time.deltaTime;
 			transform.localEulerAngles = new Vector3(angle, 90, 2*(90-angle));
-			transform.localPosition = new Vector3(pos, -0.09F, 0.31F);
+			transform.localPosition = new Vector3(pos, -0.17F, 0.46F);
 			if (startTime >= SWING_TIME) {
 				startSwing = false;
 				endSwing = true;
@@ -50,7 +50,7 @@ public class SwingSword : MonoBehaviour {
 			float pos = Mathf.Lerp(endXPos, startXPos, endTime / SWING_TIME);
 			endTime+=Time.deltaTime;
 			transform.localEulerAngles = new Vector3(angle, 90, 2*(90-angle));
-			transform.localPosition = new Vector3(pos, -0.09F, 0.31F);
+			transform.localPosition = new Vector3(pos, -0.17F, 0.46F);
 			if (endTime >= SWING_TIME) {
 				endSwing = false;
 				endTime = 0.0F;

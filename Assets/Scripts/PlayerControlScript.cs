@@ -39,15 +39,24 @@ public class PlayerControlScript : Photon.PunBehaviour {
 
 	private bool canKill = false;
 
+	private int health;
+
 	// Use this for initialization
 	void Start () {
 		CharControl = GetComponent<CharacterController>();
+
+		transform.Find("OVRCameraRig").GetComponent<OVRManager>().resetTrackerOnLoad = true;
+
 		PlayerCamera = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").gameObject;
-		PlayerSword = transform.Find("OVRCameraRig").Find("Sword").gameObject;
+		//PlayerCamera = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").Find("Sword").gameObject;
+		print (PlayerCamera.name);
+		PlayerSword = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").Find("Sword").gameObject;
+
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
 		ms = GameObject.Find ("Game Controller").GetComponent<MenuState>();
-		PlayerSword = transform.Find("OVRCameraRig").Find("Sword").gameObject;
+		health = 100;
+
 	}
 
 	[PunRPC]
@@ -83,22 +92,23 @@ public class PlayerControlScript : Photon.PunBehaviour {
 			//Rotate the player
 			transform.Rotate (Vector3.up * Time.deltaTime * Input.GetAxis ("XboxRJoyHoriz") * rotateSpeed);
 
+			Debug.DrawLine(transform.position, transform.position + PlayerCamera.transform.forward*DISTANCE_TO_HIT);
 		//Attempt to place an item
 		if (Input.GetButtonDown("XboxRBumper")) {
 		
+
 			if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
                 //print (crosshairHit.point);
 
                 //Debug.Log(crosshairHit.point);
 
-
 					float tempX = crosshairHit.point.x + crosshairHit.normal.x;
 					float tempY = crosshairHit.point.y + crosshairHit.normal.y;
 					float tempZ = crosshairHit.point.z + crosshairHit.normal.z;
 
-					tempX = (int)Mathf.Floor (tempX);
-					tempY = (int)Mathf.Floor (tempY);
-					tempZ = (int)Mathf.Floor (tempZ);
+					tempX = Mathf.FloorToInt(tempX);
+					tempY = Mathf.FloorToInt(tempY);
+					tempZ = Mathf.FloorToInt(tempZ);
 
 					tempX += 0.5F;
 					tempY += 0.5F; //cause YOLO
@@ -113,7 +123,7 @@ public class PlayerControlScript : Photon.PunBehaviour {
 					}
 
 					Vector3 newLocation = new Vector3 (tempX, tempY, tempZ);
-					//print(newLocation);
+					print(newLocation);
 
 					//checks if the space is open to place a block. 
 					if (!Physics.CheckSphere (newLocation, CUBE_WIDTH * 0.49F)) { //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
@@ -137,7 +147,6 @@ public class PlayerControlScript : Photon.PunBehaviour {
 						int tempZ = Mathf.FloorToInt(crosshairHit.point.z - crosshairHit.normal.z / 2f);
 
 						photonView.RPC("place_block_rpc", PhotonTargets.All, tempX, tempY, tempZ, (byte)0 );
-						print ( "Destroy!" );
 					}
                 //TODO remove things from the map.
                 //TODO add to inventory!
@@ -152,23 +161,32 @@ public class PlayerControlScript : Photon.PunBehaviour {
 
 		}
 
+		if (Input.GetButtonDown("XboxBack")) {
+				OVRManager.display.RecenterPose();
+		}
+
 		if (PlayerSword.GetComponent<SwingSword>().getEndSwing()) {
 			//we can check if there is a monster that was just killed. Only kills one at a time. 
 			if (canKill) {
 				//if the monster is directly in front of the player
-				if (Physics.Raycast(transform.position, transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-					Destroy(crosshairHit.transform.gameObject);
+				if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+					if (crosshairHit.transform.gameObject.tag == "Monster") {
+						Destroy(crosshairHit.transform.gameObject);
+					}
 					canKill = false;
 				}
 				//if the monster is just a little bit to the right?
-				else if (Physics.Raycast(transform.position + 0.75F*transform.right, transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-					Destroy(crosshairHit.transform.gameObject);
+				else if (Physics.Raycast(transform.position + 0.75F*transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+					if (crosshairHit.transform.gameObject.tag == "Monster") {
+						Destroy(crosshairHit.transform.gameObject);
+					}
 					canKill = false;
 				}
 				//if the monster is just a little bit to the left?
-				else if (Physics.Raycast(transform.position - 0.75F*transform.right, transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-					//if crosshairHit.tag == "monster" 
-					Destroy(crosshairHit.transform.gameObject);
+				else if (Physics.Raycast(transform.position - 0.75F*transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+					if (crosshairHit.transform.gameObject.tag == "Monster") {
+						Destroy(crosshairHit.transform.gameObject);
+					}
 					canKill = false;
 				}
 			}
@@ -177,9 +195,20 @@ public class PlayerControlScript : Photon.PunBehaviour {
 	}
 	}
 
+	public void loseHealth(int lost) {
+		health -= lost;
+
+		if (health <= 0) {
+			//DIE
+		}
+
+	}
+
+
     void OnGUI()
     {
         //Draw the crosshair at the center of the screen.
         GUI.DrawTexture(new Rect((Screen.width - crosshairTexture.width * crosshairScale) / 2, (Screen.height - crosshairTexture.height * crosshairScale) / 2, crosshairTexture.width * crosshairScale, crosshairTexture.height * crosshairScale), crosshairTexture);
+		GUI.Label(new Rect(10, 10, 250, 40), "Health Remaining: " + health);
     }
 }

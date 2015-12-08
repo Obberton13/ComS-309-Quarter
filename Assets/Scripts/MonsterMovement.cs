@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MonsterMovement : MonoBehaviour {
+public class MonsterMovement : Photon.PunBehaviour {
 
 	private const float MONSTER_ATTACK_SPEED = 3.0F; //number of seconds the enemy "cooldown" is unitl it can attack again
 	private const float MONSTER_ATTACK_RANGE = 2.0F; //number of units the enemies can attack in
@@ -28,6 +28,15 @@ public class MonsterMovement : MonoBehaviour {
 	void Start () {
 		canHit = MONSTER_ATTACK_SPEED;
 		controller = GetComponent<CharacterController>();
+	}
+
+	[PunRPC]
+	void place_block_rpc(int x, int y, int z, byte type)
+	{
+		World world;
+		world = GameObject.Find("Game Controller").GetComponent<World>(); 
+		world.putBlock( x, y, z, type );
+		
 	}
 	
 	// Update is called once per frame
@@ -70,14 +79,11 @@ public class MonsterMovement : MonoBehaviour {
 						//delete cube above head this.transform.position + new Vector3(0, 1F, 0)) + 1.01F * transform.forward.normalized)
 						//print("3");
 						if (Physics.Raycast(transform.position + new Vector3(0, 1.5F, 0), transform.forward, out monsterHit, 1.01F)) {
-							if (!monsterHit.transform.GetComponent<MeshCollider>())
-							{
 								if (canHit >= MONSTER_ATTACK_SPEED) {
-									attackBlock(monsterHit.transform.gameObject);
+									attackBlock(monsterHit.transform.gameObject, monsterHit);
 									print("OUCH3");
 									canHit = 0;
 								}
-							}
 						}
 					
 					}
@@ -87,14 +93,11 @@ public class MonsterMovement : MonoBehaviour {
 						//break the cube at the head (this.transform.position + new Vector3(0, .5F, 0)) + 1.01F * transform.forward.normalized)
 						//print("2");
 						if (Physics.Raycast(transform.position + new Vector3(0, 0.5F, 0), transform.forward, out monsterHit, 1.01F)) {
-							if (!monsterHit.transform.GetComponent<MeshCollider>())
-							{
 								if (canHit >= MONSTER_ATTACK_SPEED) {
-									attackBlock(monsterHit.transform.gameObject);
+									attackBlock(monsterHit.transform.gameObject, monsterHit);
 									print("OUCH2");
 									canHit = 0;
 								}
-							}
 						}
 					}
 
@@ -110,14 +113,11 @@ public class MonsterMovement : MonoBehaviour {
 						// break the block at (this.transform.position + new Vector3(0, 1F, 0)) + 1.01F * transform.forward.normalized)
 						//print("4");
 						if (Physics.Raycast(transform.position + new Vector3(0, 1.5F, 0), transform.forward, out monsterHit, 1.01F)) {
-							if (!monsterHit.transform.GetComponent<MeshCollider>())
-							{
 								if (canHit >= MONSTER_ATTACK_SPEED) {
-									attackBlock(monsterHit.transform.gameObject);
+									attackBlock(monsterHit.transform.gameObject, monsterHit);
 									print("OUCH4");
 									canHit = 0;
 								}
-							}
 						}
 					}
 
@@ -139,28 +139,23 @@ public class MonsterMovement : MonoBehaviour {
 					//(this.transform.position + new Vector3(0, .5F, 0)) + 1.01F * transform.forward.normalized)
 					//print("6");
 					if (Physics.Raycast(transform.position + new Vector3(0, 1.5F, 0), transform.forward, out monsterHit, 1.01F)) {
-						if (!monsterHit.transform.GetComponent<MeshCollider>())
-						{
 							if (canHit >= MONSTER_ATTACK_SPEED) {
-								attackBlock(monsterHit.transform.gameObject);
+								attackBlock(monsterHit.transform.gameObject, monsterHit);
 								print("OUCH6");
 								canHit = 0;
 							}
-						}
 					}
 				}
 				else {
 					//case 5
 					//print("5");
 					if (Physics.Raycast(transform.position + new Vector3(0, 1.5F, 0), transform.forward, out monsterHit, 1.01F)) {
-						if (!monsterHit.transform.GetComponent<MeshCollider>())	{
 							if (canHit >= MONSTER_ATTACK_SPEED) {
-								attackBlock(monsterHit.transform.gameObject);
+								attackBlock(monsterHit.transform.gameObject, monsterHit);
 								print("OUCH5");
 								canHit = 0;
 							}
 						}
-					}
 				}
 			}
 
@@ -177,6 +172,7 @@ public class MonsterMovement : MonoBehaviour {
 			if (canHit >= MONSTER_ATTACK_SPEED) {
 				
 				print("OUCH");
+				target.gameObject.GetComponent<PlayerControlScript>().loseHealth(5);
 				canHit = 0;
 			}
 
@@ -220,17 +216,27 @@ public class MonsterMovement : MonoBehaviour {
 		
 	} //end of findClosestPlayer()
 
-	private void attackBlock(GameObject block) {
+	private void attackBlock(GameObject block, RaycastHit hit) {
 
 		//TODO make it so monsters can only destroy blocks
-		//if (block.tag.Equals("Block")) {
+		if (block.tag.Equals("Block")) {
 			//99% chance to destroy right now
 			//TODO change chance based off of block info.
 			if (Random.Range(0.0F, 1.0F) <= .99F) {
-				Destroy(block); //TODO
+				//Destroy(block); //TODO
 				//Remove from Chunk
+
+				int tempX = Mathf.FloorToInt(hit.point.x - hit.normal.x / 2f);
+				int tempY = Mathf.FloorToInt(hit.point.y - hit.normal.y / 2f);
+				int tempZ = Mathf.FloorToInt(hit.point.z - hit.normal.z / 2f);
+
+				photonView.RPC("place_block_rpc", PhotonTargets.All, tempX, tempY, tempZ, (byte)0 );
+				print("Monster Destroy");
 			}
-		//}
+		}
+		else {
+			print(block.tag);
+		}
 
 	}
 
