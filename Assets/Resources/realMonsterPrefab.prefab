@@ -13,7 +13,7 @@ GameObject:
   - 23: {fileID: 2381156}
   - 114: {fileID: 11407066}
   - 143: {fileID: 14349462}
-  - 114: {fileID: 11457468}
+  - 114: {fileID: 11416232}
   m_Layer: 0
   m_Name: realMonsterPrefab
   m_TagString: Monster
@@ -77,7 +77,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpForce: 6
   gravity: 20
---- !u!114 &11457468
+--- !u!114 &11416232
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}

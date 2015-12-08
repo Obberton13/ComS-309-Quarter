@@ -171,21 +171,24 @@ public class PlayerControlScript : Photon.PunBehaviour {
 				//if the monster is directly in front of the player
 				if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
 					if (crosshairHit.transform.gameObject.tag == "Monster") {
-						Destroy(crosshairHit.transform.gameObject);
+						PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+						//Destroy(crosshairHit.transform.gameObject);
 					}
 					canKill = false;
 				}
 				//if the monster is just a little bit to the right?
 				else if (Physics.Raycast(transform.position + 0.75F*transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
 					if (crosshairHit.transform.gameObject.tag == "Monster") {
-						Destroy(crosshairHit.transform.gameObject);
+						//Destroy(crosshairHit.transform.gameObject);
+						PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
 					}
 					canKill = false;
 				}
 				//if the monster is just a little bit to the left?
 				else if (Physics.Raycast(transform.position - 0.75F*transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
 					if (crosshairHit.transform.gameObject.tag == "Monster") {
-						Destroy(crosshairHit.transform.gameObject);
+						//Destroy(crosshairHit.transform.gameObject);
+						PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
 					}
 					canKill = false;
 				}

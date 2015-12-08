@@ -23,7 +23,7 @@ public class MonsterSpawner : MonoBehaviour {
 	void Update () {
 	
 		//TODO put this in game Controller or something
-		if (Input.GetKeyDown(KeyCode.P) || Input.GetButtonDown("XboxY")) {
+		if (Input.GetKeyDown(KeyCode.Y) || Input.GetButtonDown("XboxY")) {
 			Spawn();
 		}
 
@@ -41,9 +41,7 @@ public class MonsterSpawner : MonoBehaviour {
 
 				Vector3 randPos = Random.onUnitSphere * MIN_SPAWN_DISTANCE + Random.insideUnitSphere * (MAX_SPAWN_DISTANCE - MIN_SPAWN_DISTANCE);
 				randPos.y = MAX_SPAWN_DISTANCE * 1.25F; //so the monster doesn't spawn underground
-
 				Vector3 spawnPos = new Vector3(player.transform.position.x + randPos.x, player.transform.position.y + randPos.y, player.transform.position.z + randPos.z);
-
 				GameObject newMon = PhotonNetwork.Instantiate("realMonsterPrefab", spawnPos, Quaternion.Euler(0, 0, 0), 0);
 				monstersLeft++;
 				//place monster on the ground after spawning
@@ -54,7 +52,8 @@ public class MonsterSpawner : MonoBehaviour {
 				else {
 					//we're like ALL the way underground?
 					//oh gosh I hope we aren't inside the ground
-					Destroy(newMon); //screw him then. 
+					PhotonNetwork.Destroy(newMon);
+					//Destroy(newMon); //screw him then. 
 					monstersLeft--;
 				}
 
