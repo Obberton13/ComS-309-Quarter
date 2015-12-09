@@ -76,9 +76,10 @@ public class PlayerControlScript : Photon.PunBehaviour
 	}
 
 	[PunRPC]
-	void remove_monster_rpc(GameObject to_remove )
+	void remove_monster_rpc( int to_remove )
 	{
-		PhotonNetwork.Destroy( to_remove );
+		GameObject to_rid = PhotonView.Find(to_remove).gameObject;
+		PhotonNetwork.Destroy( to_rid );
 	}
 
 
@@ -202,7 +203,8 @@ public class PlayerControlScript : Photon.PunBehaviour
 					{
 						if (crosshairHit.transform.gameObject.tag == "Monster")
 						{
-							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, crosshairHit.transform.gameObject );
+							PhotonView to_remove = crosshairHit.transform.gameObject.GetPhotonView();
+							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, to_remove.viewID );
 							//PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
 							//Destroy(crosshairHit.transform.gameObject);
 						}
@@ -213,9 +215,10 @@ public class PlayerControlScript : Photon.PunBehaviour
 					{
 						if (crosshairHit.transform.gameObject.tag == "Monster")
 						{
+							PhotonView to_remove = crosshairHit.transform.gameObject.GetPhotonView();
 							//Destroy(crosshairHit.transform.gameObject);
 							//PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
-							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, crosshairHit.transform.gameObject );
+							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, to_remove.viewID );
 						}
 						canKill = false;
 					}
@@ -224,9 +227,10 @@ public class PlayerControlScript : Photon.PunBehaviour
 					{
 						if (crosshairHit.transform.gameObject.tag == "Monster")
 						{
+							PhotonView to_remove = crosshairHit.transform.gameObject.GetPhotonView();
 							//Destroy(crosshairHit.transform.gameObject);
 							//PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
-							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, crosshairHit.transform.gameObject );
+							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, to_remove.viewID );
 						}
 						canKill = false;
 					}
