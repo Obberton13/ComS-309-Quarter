@@ -59,6 +59,11 @@ public class PlayerControlScript : Photon.PunBehaviour
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
 		ms = GameObject.Find("Game Controller").GetComponent<MenuState>();
+
+		//make the menus appear on the player cameras
+		GameObject.Find("Inventory Canvas").GetComponent<Canvas>().worldCamera = PlayerCamera.GetComponent<Camera>();
+		GameObject.Find("MainMenu").GetComponent<Canvas>().worldCamera = PlayerCamera.GetComponent<Camera>();
+
 		health = 100;
 
 	}
@@ -72,14 +77,21 @@ public class PlayerControlScript : Photon.PunBehaviour
 
 	}
 
+	[PunRPC]
+	void remove_monster_rpc( int to_remove )
+	{
+		GameObject to_rid = PhotonView.Find(to_remove).gameObject;
+		PhotonNetwork.Destroy( to_rid );
+	}
+
 
 	// Update is called once per frame
 	void Update()
 	{
 
-		//if(ms.menuState == MenuState.MenuStates.playerPlaying){
-		if (true)
-		{ //TODO
+		if(ms.menuState == MenuState.MenuStates.playerPlaying){
+		//if (true)
+		//{ //TODO
 		  //Move the camera in the X/Y direction
 			if (CharControl.isGrounded)
 			{
@@ -215,7 +227,9 @@ public class PlayerControlScript : Photon.PunBehaviour
 					{
 						if (crosshairHit.transform.gameObject.tag == "Monster")
 						{
-							PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							PhotonView to_remove = crosshairHit.transform.gameObject.GetPhotonView();
+							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, to_remove.viewID );
+							//PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
 							//Destroy(crosshairHit.transform.gameObject);
 						}
 						canKill = false;
@@ -225,8 +239,10 @@ public class PlayerControlScript : Photon.PunBehaviour
 					{
 						if (crosshairHit.transform.gameObject.tag == "Monster")
 						{
+							PhotonView to_remove = crosshairHit.transform.gameObject.GetPhotonView();
 							//Destroy(crosshairHit.transform.gameObject);
-							PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							//PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, to_remove.viewID );
 						}
 						canKill = false;
 					}
@@ -235,8 +251,10 @@ public class PlayerControlScript : Photon.PunBehaviour
 					{
 						if (crosshairHit.transform.gameObject.tag == "Monster")
 						{
+							PhotonView to_remove = crosshairHit.transform.gameObject.GetPhotonView();
 							//Destroy(crosshairHit.transform.gameObject);
-							PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							//PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, to_remove.viewID );
 						}
 						canKill = false;
 					}

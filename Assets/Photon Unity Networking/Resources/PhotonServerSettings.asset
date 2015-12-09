@@ -38,4 +38,6 @@ MonoBehaviour:
   - putBlock
   - test_print
   - place_block_rpc
+  - remove_monster_rpc
+  - Spawn
   DisableAutoOpenWizard: 1
