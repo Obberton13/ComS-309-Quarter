@@ -160,13 +160,21 @@ public class World : Photon.PunBehaviour {
         int chunkX = Mathf.FloorToInt((float)x / Constants.chunkWidth);
         int chunkZ = Mathf.FloorToInt((float)z / Constants.chunkWidth);
         Chunk chunk = _chunks[chunkX][chunkZ];
-        //How many debug.logs does it take to realize that integer division is a thing that truncates toward 0?
-        //Debug.Log(x / Constants.chunkWidth);
-        //Debug.Log(Mathf.FloorToInt(-9.5f));
-        //Debug.Log(Mathf.FloorToInt(x / Constants.chunkWidth));
-        //Debug.Log("Set Block: " + x + ", " + y + ", " + z + " to Type: " + type);
-        //Debug.Log("On chunk: " + chunkX + ", " + chunkZ);
-        chunk.getInfo().map[(int)Mathf.Repeat(x, Constants.chunkWidth), y, (int)Mathf.Repeat(z, Constants.chunkWidth)] = type;
+		//How many debug.logs does it take to realize that integer division is a thing that truncates toward 0?
+		//Debug.Log(x / Constants.chunkWidth);
+		//Debug.Log(Mathf.FloorToInt(-9.5f));
+		//Debug.Log(Mathf.FloorToInt(x / Constants.chunkWidth));
+		//Debug.Log("Set Block: " + x + ", " + y + ", " + z + " to Type: " + type);
+		//Debug.Log("On chunk: " + chunkX + ", " + chunkZ);
+		x = (int)Mathf.Repeat(x, Constants.chunkWidth);
+		z = (int)Mathf.Repeat(z, Constants.chunkWidth);
+
+		//we don't want players jumping over the walls
+		if (y > Constants.chunkHeight - 3) return;
+
+		//we don't want players to break the unbreakable block
+		if (chunk.getInfo().map[x, y, z] == 3) return;
+        chunk.getInfo().map[x, y, z] = type;
         chunk.generateMesh();
 
     }
