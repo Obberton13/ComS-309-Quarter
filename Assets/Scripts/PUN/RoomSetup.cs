@@ -45,6 +45,14 @@ public class RoomSetup : MonoBehaviour {
 		player.GetComponentInChildren<Camera>().enabled = true;
 		player.GetComponentInChildren<AudioListener>().enabled = true;
 
+		RaycastHit groundHit;
+
+		if (Physics.Raycast(player.transform.position, Vector3.down, out groundHit, Mathf.Infinity)) {
+			print("Replaced y: " + groundHit.point.y);
+			player.transform.position = new Vector3(player.transform.position.x, groundHit.point.y+1.5F, player.transform.position.z);
+		}
+
+
 
 	}
 

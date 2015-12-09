@@ -13,6 +13,6 @@ public class ClockManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        clock.GetComponent<Text>().text = System.DateTime.Now.ToShortTimeString();
+        //clock.GetComponent<Text>().text = System.DateTime.Now.ToShortTimeString();
 	}
 }

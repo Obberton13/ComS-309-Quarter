@@ -57,6 +57,11 @@ public class PlayerControlScript : Photon.PunBehaviour
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
 		ms = GameObject.Find("Game Controller").GetComponent<MenuState>();
+
+		//make the menus appear on the player cameras
+		GameObject.Find("Inventory Canvas").GetComponent<Canvas>().worldCamera = PlayerCamera.GetComponent<Camera>();
+		GameObject.Find("MainMenu").GetComponent<Canvas>().worldCamera = PlayerCamera.GetComponent<Camera>();
+
 		health = 100;
 
 	}
@@ -81,9 +86,9 @@ public class PlayerControlScript : Photon.PunBehaviour
 	void Update()
 	{
 
-		//if(ms.menuState == MenuState.MenuStates.playerPlaying){
-		if (true)
-		{ //TODO
+		if(ms.menuState == MenuState.MenuStates.playerPlaying){
+		//if (true)
+		//{ //TODO
 		  //Move the camera in the X/Y direction
 			if (CharControl.isGrounded)
 			{
