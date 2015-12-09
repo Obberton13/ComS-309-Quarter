@@ -36,7 +36,7 @@ public class RoomSetup : MonoBehaviour {
 
 		//incase we wanna do stuff with the player. We do. See below.
 		//TODO change spawn point vector3.
-		GameObject player = PhotonNetwork.Instantiate("playerPrefab", new Vector3(-150, 79, -150), Quaternion.identity, 0);
+		GameObject player = PhotonNetwork.Instantiate("playerPrefab", new Vector3(8, 79, 8), Quaternion.identity, 0);
 
 		//we should only be able to control our own player! 
 		player.GetComponent<PlayerControlScript>().enabled = true;
