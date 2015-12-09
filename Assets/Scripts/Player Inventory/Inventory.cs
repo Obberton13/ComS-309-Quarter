@@ -71,14 +71,20 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void RemoveItem(int slot)
+    public bool RemoveItem(int slot)
     {
         ItemData data = slots[slot].transform.GetChild(0).GetComponent<ItemData>();
-        data.amount--;
-        if(data.amount == 0)
+        if(data.amount > 0)
         {
-            items[slot] = new Item();
+            data.amount--;
+            data.transform.GetChild(0).GetComponent<Text>().text = data.amount.ToString();
+            if (data.amount == 0)
+            {
+                items[slot] = new Item();
+            }
+            return true;
         }
+        return false;
     }
 
     // Returns slot that item current exists in

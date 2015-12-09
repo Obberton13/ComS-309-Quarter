@@ -42,6 +42,8 @@ public class PlayerControlScript : Photon.PunBehaviour
 
 	private int health;
 
+    public int inv_selected = 1;
+
 	// Use this for initialization
 	void Start()
 	{
@@ -138,9 +140,14 @@ public class PlayerControlScript : Photon.PunBehaviour
 					//checks if the space is open to place a block. 
 					if (!Physics.CheckSphere(newLocation, CUBE_WIDTH * 0.49F))
 					{ //if the cube with is 1, the radius is .49 so we can squeeze under the limit.
-					  //TODO remove from inventory! 
-						print(newLocation);
-						photonView.RPC("place_block_rpc", PhotonTargets.All, Mathf.FloorToInt(tempX), Mathf.FloorToInt(tempY), Mathf.FloorToInt(tempZ), (byte)1);
+                      //TODO remove from inventory! 
+                        Inventory inventory = GameObject.Find("Inventory").GetComponent<Inventory>();
+                        if (inventory.RemoveItem(inv_selected))
+                        {
+                            print(newLocation);
+						    photonView.RPC("place_block_rpc", PhotonTargets.All, Mathf.FloorToInt(tempX), Mathf.FloorToInt(tempY), Mathf.FloorToInt(tempZ), (byte)1);
+                        }
+						
 					}
 				}
 

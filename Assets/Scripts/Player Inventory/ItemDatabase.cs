@@ -55,7 +55,7 @@ public class Item
         //this.sprite = Resources.Load<Sprite>("Sprites/Items/" + this.Color + "_block");
         if (id > 0)
             this.sprite = Resources.Load<Sprite>("Sprites/Items/inv_" + this.Color);
-        else this.sprite = null;
+        //else this.sprite = null;
         Debug.Log(this.sprite);
     }
 }
