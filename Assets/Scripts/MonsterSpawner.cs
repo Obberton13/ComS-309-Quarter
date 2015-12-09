@@ -18,17 +18,6 @@ public class MonsterSpawner : Photon.PunBehaviour {
 	void Start () {
 		monstersLeft = 0;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-		//TODO put this in game Controller or something
-		if (Input.GetKeyDown(KeyCode.Y) || Input.GetButtonDown("XboxY")) {
-			photonView.RPC("Spawn", PhotonTargets.MasterClient, null );
-		}
-
-
-	}
 
 	[PunRPC]
 	void Spawn() {
@@ -63,6 +52,19 @@ public class MonsterSpawner : Photon.PunBehaviour {
 			}//end of for loop
 			
 		} //end of for each
+		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+		//TODO put this in game Controller or something
+		if (Input.GetKeyDown(KeyCode.Y) || Input.GetButtonDown("XboxY")) {
+			photonView.RPC("Spawn", PhotonTargets.MasterClient, null );
+		}
+
 
 	}
+
+
 }
