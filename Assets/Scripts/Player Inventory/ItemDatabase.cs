@@ -52,7 +52,10 @@ public class Item
         this.ID = id;
         this.Color = color;
         Debug.Log(this.Color + "_block");
-        this.sprite = Resources.Load<Sprite>("Sprites/Items/" + this.Color + "_block");
+        //this.sprite = Resources.Load<Sprite>("Sprites/Items/" + this.Color + "_block");
+        if (id > 0)
+            this.sprite = Resources.Load<Sprite>("Sprites/Items/inv_" + this.Color);
+        else this.sprite = null;
         Debug.Log(this.sprite);
     }
 }

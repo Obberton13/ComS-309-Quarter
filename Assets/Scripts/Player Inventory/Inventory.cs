@@ -35,6 +35,8 @@ public class Inventory : MonoBehaviour
         AddItem(1);
         AddItem(0);
         AddItem(1);
+        AddItem(2);
+        AddItem(3);
     }
 
     public void AddItem(int id)
@@ -61,6 +63,8 @@ public class Inventory : MonoBehaviour
                     obj.transform.position = Vector2.zero;
                     //obj.name = adding.Color + " Block";
                     slots[i].name = adding.Color + " Block";
+                    ItemData data = slots[i].transform.GetChild(0).GetComponent<ItemData>();
+                    data.amount++;
                     break;
                 }
             }
@@ -69,7 +73,12 @@ public class Inventory : MonoBehaviour
 
     public void RemoveItem(int slot)
     {
-        items[slot] = new Item();
+        ItemData data = slots[slot].transform.GetChild(0).GetComponent<ItemData>();
+        data.amount--;
+        if(data.amount == 0)
+        {
+            items[slot] = new Item();
+        }
     }
 
     // Returns slot that item current exists in

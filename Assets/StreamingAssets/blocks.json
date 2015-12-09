@@ -1,10 +1,18 @@
 [
 	{
 		"id": 0,
-		"color": "white"
+		"color": "air"
 	},
 	{
 		"id": 1,
-		"color": "yellow"
+		"color": "grey"
+	},
+	{
+		"id": 2,
+		"color": "brown"
+	},
+	{
+		"id": 3,
+		"color": "dgrey"
 	}
 ]
