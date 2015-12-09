@@ -23,7 +23,7 @@ public class PlayerControlScript : Photon.PunBehaviour {
 	private PlayerInventoryScript inventory;
 
 	private GameObject PlayerCamera;
-	private GameObject PlayerSword;
+	//private GameObject PlayerSword;
 
 	//Crosshair varaibles;
 	[SerializeField]
@@ -50,7 +50,7 @@ public class PlayerControlScript : Photon.PunBehaviour {
 		PlayerCamera = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").gameObject;
 		//PlayerCamera = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").Find("Sword").gameObject;
 		print (PlayerCamera.name);
-		PlayerSword = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").Find("Sword").gameObject;
+		//PlayerSword = transform.Find("OVRCameraRig").Find("TrackingSpace").Find("CenterEyeAnchor").Find("Sword").gameObject;
 
 		//inventory = new PlayerInventoryScript();
 		moveDir = Vector3.zero;
@@ -155,9 +155,9 @@ public class PlayerControlScript : Photon.PunBehaviour {
 	
 		if (Input.GetButtonDown("XboxB") || Input.GetKeyDown(KeyCode.U)) {
 				//Do the sword animation
-				if(PlayerSword.GetComponent<SwingSword>().attack()) {
-					canKill = true;
-				}
+				//if(PlayerSword.GetComponent<SwingSword>().attack()) {
+				//	canKill = true;
+				//}
 
 		}
 
@@ -165,35 +165,35 @@ public class PlayerControlScript : Photon.PunBehaviour {
 				OVRManager.display.RecenterPose();
 		}
 
-		if (PlayerSword.GetComponent<SwingSword>().getEndSwing()) {
-			//we can check if there is a monster that was just killed. Only kills one at a time. 
-			if (canKill) {
-				//if the monster is directly in front of the player
-				if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-					if (crosshairHit.transform.gameObject.tag == "Monster") {
-						PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
-						//Destroy(crosshairHit.transform.gameObject);
-					}
-					canKill = false;
-				}
-				//if the monster is just a little bit to the right?
-				else if (Physics.Raycast(transform.position + 0.75F*transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-					if (crosshairHit.transform.gameObject.tag == "Monster") {
-						//Destroy(crosshairHit.transform.gameObject);
-						PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
-					}
-					canKill = false;
-				}
-				//if the monster is just a little bit to the left?
-				else if (Physics.Raycast(transform.position - 0.75F*transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
-					if (crosshairHit.transform.gameObject.tag == "Monster") {
-						//Destroy(crosshairHit.transform.gameObject);
-						PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
-					}
-					canKill = false;
-				}
-			}
-		}
+		//if (PlayerSword.GetComponent<SwingSword>().getEndSwing()) {
+		//	//we can check if there is a monster that was just killed. Only kills one at a time. 
+		//	if (canKill) {
+		//		//if the monster is directly in front of the player
+		//		if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+		//			if (crosshairHit.transform.gameObject.tag == "Monster") {
+		//				PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+		//				//Destroy(crosshairHit.transform.gameObject);
+		//			}
+		//			canKill = false;
+		//		}
+		//		//if the monster is just a little bit to the right?
+		//		else if (Physics.Raycast(transform.position + 0.75F*transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+		//			if (crosshairHit.transform.gameObject.tag == "Monster") {
+		//				//Destroy(crosshairHit.transform.gameObject);
+		//				PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+		//			}
+		//			canKill = false;
+		//		}
+		//		//if the monster is just a little bit to the left?
+		//		else if (Physics.Raycast(transform.position - 0.75F*transform.right, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT)) {
+		//			if (crosshairHit.transform.gameObject.tag == "Monster") {
+		//				//Destroy(crosshairHit.transform.gameObject);
+		//				PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+		//			}
+		//			canKill = false;
+		//		}
+		//	}
+		//}
 
 	}
 	}

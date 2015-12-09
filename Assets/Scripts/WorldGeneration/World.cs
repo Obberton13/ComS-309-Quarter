@@ -10,9 +10,9 @@ public class World : Photon.PunBehaviour {
     private GameObject _prefab;
     private Dictionary<int, Dictionary<int, Chunk>> _chunks = new Dictionary<int, Dictionary<int, Chunk>>();
 	private List<ChunkInfo> _infos = new List<ChunkInfo> ();
-	private Queue<ChunkInfo> _needsGenerated;
-    private Queue<ChunkInfo> _needsMesh;
-    private Queue<ChunkInfo> _fullyGenerated;
+	private PQueue<ChunkInfo> _needsGenerated;
+    private PQueue<ChunkInfo> _needsMesh;
+    private PQueue<ChunkInfo> _fullyGenerated;
     private volatile bool _running;
 	public volatile bool _isGenerating;
     private System.Threading.Thread generationThread1;
@@ -21,8 +21,8 @@ public class World : Photon.PunBehaviour {
     {
         Random.seed = 1;
         Noise.init();
-        _needsGenerated = new Queue<ChunkInfo>();
-        _needsMesh = new Queue<ChunkInfo>();
+        _needsGenerated = new PQueue<ChunkInfo>();
+        _needsMesh = new PQueue<ChunkInfo>();
         _running = true;
         generationThread1 = new System.Threading.Thread(generateChunks);
         generationThread1.Start();
@@ -38,10 +38,11 @@ public class World : Photon.PunBehaviour {
             {
                 ChunkInfo info = new ChunkInfo(new Vector3(Constants.chunkWidth * x, 0, Constants.chunkWidth * z), this);
                 lock(_needsGenerated)
-                {
-                    _needsGenerated.Enqueue(info);
+				{
+					_needsGenerated.Enqueue(info);
 					_infos.Add (info);
-                }
+					Debug.Log("" + x + ", " + z + _needsGenerated.Count);
+				}
 			}
         }
     }
@@ -84,7 +85,8 @@ public class World : Photon.PunBehaviour {
 
     public static byte getPotentialBlock(int x, int y, int z)
     {
-        if (y == 0) return 1;
+        if (y == 0) return 3;
+		if (x < -144 || x > 144 || z < -144 || z > 144) return 3;
         float noise1 = Noise.getNoiseValue(new Vector3(x, y, z) / 16f);
         float noise2 = Noise.getNoiseValue(new Vector3(x, y, z) / 37f);
         float noise4 = Noise.getNoiseValue(new Vector3(x, y, z) / 4f);

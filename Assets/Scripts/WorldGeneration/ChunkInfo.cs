@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System;
 
 [System.Serializable]
-public class ChunkInfo {
+public class ChunkInfo : IPriority {
     public byte[,,] map { get; set; }
 	public float x;
 	public float y;
 	public float z;
 	//private World world;
+
+	private float sqrDistToOrigin = 0.0f;
 
     public ChunkInfo(Vector3 position, World world)
     {
@@ -17,6 +19,7 @@ public class ChunkInfo {
 		x = position.x;
 		y = position.y;
 		z = position.z;
+		this.sqrDistToOrigin = position.sqrMagnitude;
     }
 
     public void generate()
@@ -42,5 +45,10 @@ public class ChunkInfo {
 	public Vector3 getPos()
 	{
 		return new Vector3(this.x, this.y, this.z);
+	}
+
+	public float getPriority()
+	{
+		return sqrDistToOrigin;
 	}
 }
