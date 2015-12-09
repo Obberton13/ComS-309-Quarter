@@ -42,7 +42,7 @@ public class PlayerControlScript : Photon.PunBehaviour
 
 	private int health;
 
-    public int inv_selected = 1;
+    public int inv_selected = 0;
 
 	// Use this for initialization
 	void Start()
@@ -104,8 +104,6 @@ public class PlayerControlScript : Photon.PunBehaviour
 			//Attempt to place an item
 			if (Input.GetButtonDown("XboxRBumper"))
 			{
-
-
 				if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT))
 				{
 					//print (crosshairHit.point);
@@ -147,12 +145,21 @@ public class PlayerControlScript : Photon.PunBehaviour
                             print(newLocation);
 						    photonView.RPC("place_block_rpc", PhotonTargets.All, Mathf.FloorToInt(tempX), Mathf.FloorToInt(tempY), Mathf.FloorToInt(tempZ), (byte)1);
                         }
-						
 					}
 				}
 
 			}
-			if (Input.GetButtonDown("XboxLBumper"))
+            if (Input.GetAxis("XboxDpadHoriz") < -0.5)
+            {
+                inv_selected = Mathf.Max(0, inv_selected - 1);
+                print(inv_selected);
+            }
+            if (Input.GetAxis("XboxDpadHoriz") > 0.5)
+            {
+                inv_selected = Mathf.Min(3, inv_selected + 1);
+                print(inv_selected);
+            }
+            if (Input.GetButtonDown("XboxLBumper"))
 			{
 				if (Physics.Raycast(transform.position, PlayerCamera.transform.forward, out crosshairHit, DISTANCE_TO_HIT))
 				{
@@ -166,12 +173,22 @@ public class PlayerControlScript : Photon.PunBehaviour
 						int tempY = Mathf.FloorToInt(crosshairHit.point.y - crosshairHit.normal.y / 2f);
 						int tempZ = Mathf.FloorToInt(crosshairHit.point.z - crosshairHit.normal.z / 2f);
 
-						photonView.RPC("place_block_rpc", PhotonTargets.All, tempX, tempY, tempZ, (byte)0);
-					}
-					//TODO remove things from the map.
-					//TODO add to inventory!
-				}
-			}
+                        Inventory inventory = GameObject.Find("Inventory").GetComponent<Inventory>();
+
+                        World world;
+                        world = GameObject.Find("Game Controller").GetComponent<World>();
+                        int thing = world.getActualBlock(tempX, tempY, tempZ);
+                        Debug.Log(thing);
+                        inventory.AddItem(thing);
+
+                        photonView.RPC("place_block_rpc", PhotonTargets.All, tempX, tempY, tempZ, (byte)0);
+
+                        
+                    }
+                    //TODO remove things from the map.
+                    //TODO add to inventory!
+                }
+            }
 
 			if (Input.GetButtonDown("XboxB") || Input.GetKeyDown(KeyCode.U))
 			{

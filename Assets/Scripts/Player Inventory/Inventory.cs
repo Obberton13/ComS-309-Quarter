@@ -31,12 +31,12 @@ public class Inventory : MonoBehaviour
             slots.Add(Instantiate(inventorySlot));
             slots[i].transform.SetParent(slotPanel.transform);
         }
-        AddItem(0);
-        AddItem(1);
-        AddItem(0);
-        AddItem(1);
-        AddItem(2);
-        AddItem(3);
+        for (int i = 0; i < 5; ++i)
+        {
+            AddItem(1);
+            AddItem(2);
+            AddItem(3);
+        }
     }
 
     public void AddItem(int id)
@@ -61,7 +61,6 @@ public class Inventory : MonoBehaviour
                     obj.transform.SetParent(slots[i].transform);
                     obj.GetComponent<Image>().sprite = adding.sprite;
                     obj.transform.position = Vector2.zero;
-                    //obj.name = adding.Color + " Block";
                     slots[i].name = adding.Color + " Block";
                     ItemData data = slots[i].transform.GetChild(0).GetComponent<ItemData>();
                     data.amount++;
@@ -73,6 +72,7 @@ public class Inventory : MonoBehaviour
 
     public bool RemoveItem(int slot)
     {
+        print(slots[slot]);
         ItemData data = slots[slot].transform.GetChild(0).GetComponent<ItemData>();
         if(data.amount > 0)
         {
@@ -80,7 +80,7 @@ public class Inventory : MonoBehaviour
             data.transform.GetChild(0).GetComponent<Text>().text = data.amount.ToString();
             if (data.amount == 0)
             {
-                items[slot] = new Item();
+                //items[slot] = new Item();
             }
             return true;
         }

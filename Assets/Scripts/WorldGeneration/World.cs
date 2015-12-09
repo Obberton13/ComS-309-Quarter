@@ -108,7 +108,19 @@ public class World : Photon.PunBehaviour {
 
     public byte getActualBlock(int x, int y, int z)
     {
-        return 0;
+
+        int chunkX = Mathf.FloorToInt((float)x / Constants.chunkWidth);
+        int chunkZ = Mathf.FloorToInt((float)z / Constants.chunkWidth);
+        Chunk chunk = _chunks[chunkX][chunkZ];
+        //How many debug.logs does it take to realize that integer division is a thing that truncates toward 0?
+        //Debug.Log(x / Constants.chunkWidth);
+        //Debug.Log(Mathf.FloorToInt(-9.5f));
+        //Debug.Log(Mathf.FloorToInt(x / Constants.chunkWidth));
+        //Debug.Log("Set Block: " + x + ", " + y + ", " + z + " to Type: " + type);
+        //Debug.Log("On chunk: " + chunkX + ", " + chunkZ);
+        x = (int)Mathf.Repeat(x, Constants.chunkWidth);
+        z = (int)Mathf.Repeat(z, Constants.chunkWidth);
+        return chunk.getInfo().map[x,y,z];
     }
 
     private void generateChunks()
