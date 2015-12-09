@@ -60,7 +60,7 @@ public class MonsterSpawner : Photon.PunBehaviour {
 	
 		//TODO put this in game Controller or something
 		if (Input.GetKeyDown(KeyCode.Y) || Input.GetButtonDown("XboxY")) {
-			photonView.RPC("Spawn", PhotonTargets.MasterClient, null );
+			photonView.RPC("Spawn", PhotonTargets.MasterClient );
 		}
 
 
