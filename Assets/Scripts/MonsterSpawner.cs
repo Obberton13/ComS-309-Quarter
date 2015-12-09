@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MonsterSpawner : MonoBehaviour {
+public class MonsterSpawner : Photon.PunBehaviour {
 
 	private int monstersLeft;
 
@@ -30,19 +30,22 @@ public class MonsterSpawner : MonoBehaviour {
 
 	}
 
-	void Spawn() {
-
-
+	[PunRPC]
+	void spawn_monsters_master()
+	{
+		//MonsterSpawner ms = GameObject.Find("Game Controller").GetComponent<World>();
 		GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
 		//spawn a monster around each player
 		foreach(GameObject player in allPlayers) {
-
+			
 			for (int i = 0; i < MONSTERS_TO_SPAWN; i++) {
-
+				
 				Vector3 randPos = Random.onUnitSphere * MIN_SPAWN_DISTANCE + Random.insideUnitSphere * (MAX_SPAWN_DISTANCE - MIN_SPAWN_DISTANCE);
 				randPos.y = MAX_SPAWN_DISTANCE * 1.25F; //so the monster doesn't spawn underground
 				Vector3 spawnPos = new Vector3(player.transform.position.x + randPos.x, player.transform.position.y + randPos.y, player.transform.position.z + randPos.z);
-				GameObject newMon = PhotonNetwork.Instantiate("realMonsterPrefab", spawnPos, Quaternion.Euler(0, 0, 0), 0);
+			
+				GameObject newMon = PhotonNetwork.InstantiateSceneObject("realMonsterPrefab", spawnPos, Quaternion.Euler(0, 0, 0), 0, null);
+				
 				monstersLeft++;
 				//place monster on the ground after spawning
 				if (Physics.Raycast(newMon.transform.position, Vector3.down, out groundHit, Mathf.Infinity)) {
@@ -56,11 +59,16 @@ public class MonsterSpawner : MonoBehaviour {
 					//Destroy(newMon); //screw him then. 
 					monstersLeft--;
 				}
-
+				
 			}//end of for loop
-
+			
 		} //end of for each
+	
+	}
 
+	void Spawn() {
+		// Do things on the master client - he is our bitch
+		photonView.RPC("spawn_monsters_master", PhotonTargets.MasterClient);
 
 	}
 }

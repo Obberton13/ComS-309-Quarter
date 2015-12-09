@@ -70,6 +70,12 @@ public class PlayerControlScript : Photon.PunBehaviour
 
 	}
 
+	[PunRPC]
+	void remove_monster_rpc(GameObject to_remove )
+	{
+		PhotonNetwork.Destroy( to_remove );
+	}
+
 
 	// Update is called once per frame
 	void Update()
@@ -191,7 +197,8 @@ public class PlayerControlScript : Photon.PunBehaviour
 					{
 						if (crosshairHit.transform.gameObject.tag == "Monster")
 						{
-							PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, crosshairHit.transform.gameObject );
+							//PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
 							//Destroy(crosshairHit.transform.gameObject);
 						}
 						canKill = false;
@@ -202,7 +209,8 @@ public class PlayerControlScript : Photon.PunBehaviour
 						if (crosshairHit.transform.gameObject.tag == "Monster")
 						{
 							//Destroy(crosshairHit.transform.gameObject);
-							PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							//PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, crosshairHit.transform.gameObject );
 						}
 						canKill = false;
 					}
@@ -212,7 +220,8 @@ public class PlayerControlScript : Photon.PunBehaviour
 						if (crosshairHit.transform.gameObject.tag == "Monster")
 						{
 							//Destroy(crosshairHit.transform.gameObject);
-							PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							//PhotonNetwork.Destroy(crosshairHit.transform.gameObject);
+							photonView.RPC( "remove_monster_rpc", PhotonTargets.MasterClient, crosshairHit.transform.gameObject );
 						}
 						canKill = false;
 					}
