@@ -24,16 +24,16 @@ public class MonsterSpawner : Photon.PunBehaviour {
 	
 		//TODO put this in game Controller or something
 		if (Input.GetKeyDown(KeyCode.Y) || Input.GetButtonDown("XboxY")) {
-			Spawn();
+			photonView.RPC("Spawn", PhotonTargets.MasterClient, null );
 		}
 
 
 	}
 
 	[PunRPC]
-	void spawn_monsters_master()
-	{
-		//MonsterSpawner ms = GameObject.Find("Game Controller").GetComponent<World>();
+	void Spawn() {
+		// Do things on the master client - he is our bitch
+		print ("Making monsters");
 		GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
 		//spawn a monster around each player
 		foreach(GameObject player in allPlayers) {
@@ -43,7 +43,7 @@ public class MonsterSpawner : Photon.PunBehaviour {
 				Vector3 randPos = Random.onUnitSphere * MIN_SPAWN_DISTANCE + Random.insideUnitSphere * (MAX_SPAWN_DISTANCE - MIN_SPAWN_DISTANCE);
 				randPos.y = MAX_SPAWN_DISTANCE * 1.25F; //so the monster doesn't spawn underground
 				Vector3 spawnPos = new Vector3(player.transform.position.x + randPos.x, player.transform.position.y + randPos.y, player.transform.position.z + randPos.z);
-			
+				
 				GameObject newMon = PhotonNetwork.InstantiateSceneObject("realMonsterPrefab", spawnPos, Quaternion.Euler(0, 0, 0), 0, null);
 				
 				monstersLeft++;
@@ -63,12 +63,6 @@ public class MonsterSpawner : Photon.PunBehaviour {
 			}//end of for loop
 			
 		} //end of for each
-	
-	}
-
-	void Spawn() {
-		// Do things on the master client - he is our bitch
-		photonView.RPC("spawn_monsters_master", PhotonTargets.MasterClient);
 
 	}
 }
